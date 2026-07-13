@@ -106,6 +106,8 @@ function LeagueFixtures({
     return [...new Set(dates)].sort();
   }, [data]);
 
+  const fixtureDateSet = useMemo(() => new Set(fixtureDates), [fixtureDates]);
+
   useEffect(() => {
     if (!fixtureDates.length) return;
     const upcoming = fixtureDates.find((d) => d >= todayStr);
@@ -199,7 +201,7 @@ function LeagueFixtures({
               onSelect={handleCalendarSelect}
               disabled={(date) => {
                 const dateStr = toDateString(date);
-                return dateStr < dateFrom || dateStr > dateTo;
+                return !fixtureDateSet.has(dateStr);
               }}
             />
           </PopoverContent>
