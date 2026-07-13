@@ -1,0 +1,105 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+:root {
+  --surface-1: oklch(0.1533 0.0107 294.27);
+  --surface-2: oklch(0.1785 0.0041 285.98);
+  --surface-3: oklch(0.18 0.003 260);
+  --surface-4: oklch(0.1909 0.0087 264.35);
+  --surface-5: oklch(0.21 0.003 260);
+  --surface-6: oklch(0.3082 0.009 295.04);
+
+  /* ── Shadcn surface aliases ── */
+  --background: var(--surface-4);
+  --popover: var(--surface-6);
+  --popover-foreground: var(--foreground);
+  --muted: var(--surface-5);
+
+  --foreground: oklch(0.97 0.005 260);
+  --foreground-muted: oklch(0.6 0.005 260);
+  --foreground-dim: oklch(0.4 0.005 260);
+  --muted-foreground: var(--foreground-muted);
+
+  --border: oklch(1 0 0 / 0.08);
+  --border-strong: oklch(1 0 0 / 0.16);
+  --input: oklch(1 0 0 / 0.12);
+  --ring: oklch(1 0 0 / 0.4);
+
+  --primary: oklch(0.935048 0.198069 104.666);
+  --primary-foreground: oklch(0.13 0.005 260);
+  --accent: oklch(0.3722 0.0034 286.23);
+  --accent-foreground: var(--foreground);
+
+  --success: oklch(0.72 0.19 145);
+  --destructive: oklch(0.65 0.22 30);
+
+  --radius: 0.5rem;
+}
+
+@theme inline {
+  --font-display: "Space Grotesk Variable", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
+  --color-surface-5: var(--surface-5);
+  --color-surface-6: var(--surface-6);
+
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-dim: var(--foreground-dim);
+
+  --color-border-strong: var(--border-strong);
+  --color-success: var(--success);
+
+  --radius-xs: calc(var(--radius) * 0.4);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.4);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply text-foreground;
+    background: radial-gradient(
+      ellipse 150% 175% at 40% 40%,
+      #162330 0%,
+      #0a1018 50%,
+      #060a0d 100%
+    );
+    min-height: 100vh;
+  }
+  html {
+    @apply font-sans;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
