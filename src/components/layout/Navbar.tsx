@@ -11,7 +11,6 @@ import { NAV_LINKS } from "@/constants";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useAuthModal } from "@/features/auth/context/AuthModalContext";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { cn } from "@/lib/utils";
 import { LogOut, Menu, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -24,7 +23,7 @@ function UserGlyph({ username }: { username?: string }) {
   );
 }
 
-export default function Navbar({ scrolled }: { scrolled: boolean }) {
+export default function Navbar() {
   const { user, profile } = useAuthContext();
   const { openAuthModal } = useAuthModal();
   const { signOut } = useAuth();
@@ -48,12 +47,7 @@ export default function Navbar({ scrolled }: { scrolled: boolean }) {
     }`;
 
   return (
-    <nav
-      className={cn(
-        "w-full transition-colors duration-200",
-        scrolled && "border-b border-border",
-      )}
-    >
+    <nav className="w-full transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
         <div className="flex items-center justify-start shrink-0">
           <Link
