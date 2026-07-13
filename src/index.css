@@ -83,16 +83,24 @@
   }
   body {
     @apply text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  html::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
     background: radial-gradient(
-      ellipse 150% 175% at 40% 40%,
+      ellipse 150% 200% at 40% 40%,
       #162330 0%,
       #0a1018 50%,
       #060a0d 100%
     );
-    min-height: 100vh;
-  }
-  html {
-    @apply font-sans;
   }
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
