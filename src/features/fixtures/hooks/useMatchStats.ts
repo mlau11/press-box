@@ -19,11 +19,16 @@ export interface StandingEntry {
   goalDifference: number;
 }
 
+export interface StandingGroup {
+  group: string | null;
+  table: StandingEntry[];
+}
+
 interface StandingsResponse {
   standings: Array<{
     type: string;
     group?: string;
-    table: StandingEntry[];
+    table?: StandingEntry[];
   }>;
 }
 
@@ -90,14 +95,17 @@ const fetchTeamForm = async (teamId: number): Promise<FormMatch[]> => {
   return data.matches ?? [];
 };
 
-const fetchStandings = async (
-  leagueCode: string,
-): Promise<StandingEntry[][]> => {
+const fetchStandings = async (leagueCode: string): Promise<StandingGroup[]> => {
   const params = new URLSearchParams({ type: "standings", league: leagueCode });
   const response = await fetch(`${BASE_URL}?${params}`, { headers: HEADERS });
   if (!response.ok) throw new Error("Failed to fetch standings");
   const data: StandingsResponse = await response.json();
-  return data.standings.filter((s) => s.type === "TOTAL").map((s) => s.table);
+  return data.standings
+    .filter((s) => s.type === "TOTAL" && s.table && s.table.length > 0)
+    .map((s) => ({
+      group: s.group ?? null,
+      table: s.table!,
+    }));
 };
 
 export const useStandings = (leagueCode: string | undefined) => {
