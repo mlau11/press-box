@@ -1,5 +1,5 @@
 import { LiveDot, Pill } from "@/components/ui/pill";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import type { Match } from "@/types";
 import { formatKickoff, statusLabel } from "@/utils/matches";
 
@@ -41,7 +41,7 @@ export default function MatchCard({
     >
       {/* Top row — date + time/status */}
       <div className="flex items-center justify-between mb-2.5">
-        <Ticker>{date}</Ticker>
+        <Label>{date}</Label>
         <div className="flex items-center gap-2">
           {isPredicted && <Pill variant="neutral">Predicted</Pill>}
           {isLive && label ? (
@@ -52,9 +52,9 @@ export default function MatchCard({
           ) : isPostponed && label ? (
             <Pill variant="neutral">{label}</Pill>
           ) : (
-            <Ticker className={isFinished ? "" : "text-foreground"}>
+            <Label className={isFinished ? "" : "text-foreground"}>
               {time}
-            </Ticker>
+            </Label>
           )}
         </div>
       </div>

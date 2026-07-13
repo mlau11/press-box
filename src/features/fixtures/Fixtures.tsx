@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import type { WCStage } from "@/constants";
 import { LEAGUES } from "@/constants";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
@@ -163,7 +163,7 @@ function LeagueFixtures({
   if (isError)
     return (
       <div className="py-12 text-center">
-        <Ticker>Failed to load fixtures. Try again later.</Ticker>
+        <Label>Failed to load fixtures. Try again later.</Label>
       </div>
     );
 
@@ -219,7 +219,7 @@ function LeagueFixtures({
 
       {matches.length === 0 ? (
         <p className="py-12 text-center">
-          <Ticker>No fixtures for this date</Ticker>
+          <Label>No fixtures for this date</Label>
         </p>
       ) : (
         <div className="flex flex-col">

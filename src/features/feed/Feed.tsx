@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import { useQueryClient } from "@tanstack/react-query";
 import { RefreshCw, Rss } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
@@ -92,7 +92,7 @@ export default function Feed() {
         <FeedSkeleton />
       ) : isError ? (
         <p className="py-12 text-center">
-          <Ticker>Failed to load feed. Please try again later.</Ticker>
+          <Label>Failed to load feed. Please try again later.</Label>
         </p>
       ) : allItems.length === 0 ? (
         <div className="text-center py-24">
@@ -105,7 +105,7 @@ export default function Feed() {
         </div>
       ) : filteredItems.length === 0 ? (
         <p className="py-12 text-center">
-          <Ticker>No {filter} predictions to show</Ticker>
+          <Label>No {filter} predictions to show</Label>
         </p>
       ) : (
         <div className="flex flex-col">

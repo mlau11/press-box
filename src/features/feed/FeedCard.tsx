@@ -1,5 +1,5 @@
 import { Pill } from "@/components/ui/pill";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import { leagueLabel } from "@/constants";
 import { formatDate } from "@/utils/formatDate";
 import { Link } from "react-router-dom";
@@ -40,10 +40,10 @@ export default function FeedCard({ item }: { item: FeedItem }) {
             <span className="text-[20px] tracking-[0.04em] uppercase text-foreground leading-none">
               {item.username}
             </span>
-            <Ticker className="uppercase truncate">
+            <Label className="uppercase truncate">
               {leagueLabel[item.league_code] ?? item.league_code} · MD&nbsp;
               {item.matchday} · {formatDate(item.created_at)}
-            </Ticker>
+            </Label>
           </div>
         </Link>
         {item.is_scored ? (
@@ -52,14 +52,14 @@ export default function FeedCard({ item }: { item: FeedItem }) {
               {outcomeLabel[item.outcome ?? "wrong"] ?? "WRONG"}
             </Pill>
             <div className="flex justify-center items-baseline gap-1">
-              <Ticker className="uppercase truncate text-foreground text-[18px]">
+              <Label className="uppercase truncate text-foreground text-[18px]">
                 {pointsLabel[item.outcome ?? "wrong"] ?? "0"}
-              </Ticker>
-              <Ticker className="uppercase truncate text-sm">Pts</Ticker>
+              </Label>
+              <Label className="uppercase truncate text-sm">Pts</Label>
             </div>
           </div>
         ) : (
-          <Ticker>PENDING</Ticker>
+          <Label>PENDING</Label>
         )}
       </div>
 
@@ -71,11 +71,11 @@ export default function FeedCard({ item }: { item: FeedItem }) {
               alt={item.home_short_name}
               className="w-9 h-9 object-contain"
             />
-            <Ticker className="uppercase">{item.home_short_name}</Ticker>
+            <Label className="uppercase">{item.home_short_name}</Label>
           </div>
 
           <div className="flex flex-col items-center gap-1">
-            <Ticker>PREDICTED</Ticker>
+            <Label>PREDICTED</Label>
             <div className="flex items-baseline gap-2">
               <span className="text-[32px] leading-none tabular-nums">
                 {item.predicted_home}
@@ -91,7 +91,7 @@ export default function FeedCard({ item }: { item: FeedItem }) {
               item.home_score != null &&
               item.away_score != null && (
                 <div className="flex flex-col items-center gap-0.5 mt-1">
-                  <Ticker>FINAL</Ticker>
+                  <Label>FINAL</Label>
                   <span className="text-sm text-foreground-muted tabular-nums">
                     {item.home_score} – {item.away_score}
                   </span>
@@ -105,7 +105,7 @@ export default function FeedCard({ item }: { item: FeedItem }) {
               alt={item.away_short_name}
               className="w-9 h-9 object-contain"
             />
-            <Ticker className="uppercase">{item.away_short_name}</Ticker>
+            <Label className="uppercase">{item.away_short_name}</Label>
           </div>
         </div>
       </div>
