@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { LiveDot, Pill } from "@/components/ui/pill";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ticker } from "@/components/ui/typography";
 import { leagueLabel, WC_STAGES } from "@/constants";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
@@ -257,6 +258,76 @@ export default function MatchPanel({
     });
   };
 
+  const standingsContent = standings
+    ? (() => {
+        const homeGroup = standings.find((g) =>
+          g.table.some((e) => e.team.id === match.homeTeam.id),
+        );
+        const awayGroup = standings.find((g) =>
+          g.table.some((e) => e.team.id === match.awayTeam.id),
+        );
+        const isSameGroup = homeGroup === awayGroup;
+
+        if (!homeGroup && !awayGroup) return null;
+
+        if (isSameGroup && homeGroup) {
+          return (
+            <div>
+              <Ticker className="block mb-3">
+                {homeGroup.group ?? "Group standings"}
+              </Ticker>
+              {renderStandingsTable(
+                shouldFilterStandings
+                  ? homeGroup.table.filter(
+                      (e) =>
+                        e.team.id === match.homeTeam.id ||
+                        e.team.id === match.awayTeam.id,
+                    )
+                  : homeGroup.table,
+                match.homeTeam.id,
+                match.awayTeam.id,
+              )}
+            </div>
+          );
+        }
+
+        return (
+          <div className="grid grid-cols-2 gap-6">
+            {homeGroup && (
+              <div>
+                <Ticker className="block mb-3">
+                  {homeGroup.group ?? "Home group"}
+                </Ticker>
+                {renderStandingsTable(
+                  shouldFilterStandings
+                    ? homeGroup.table.filter(
+                        (e) => e.team.id === match.homeTeam.id,
+                      )
+                    : homeGroup.table,
+                  match.homeTeam.id,
+                )}
+              </div>
+            )}
+            {awayGroup && (
+              <div>
+                <Ticker className="block mb-3">
+                  {awayGroup.group ?? "Away group"}
+                </Ticker>
+                {renderStandingsTable(
+                  shouldFilterStandings
+                    ? awayGroup.table.filter(
+                        (e) => e.team.id === match.awayTeam.id,
+                      )
+                    : awayGroup.table,
+                  match.awayTeam.id,
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })()
+    : null;
+
   return (
     <div className="flex flex-col gap-4">
       {/* ===== Scoreboard ===== */}
@@ -390,7 +461,6 @@ export default function MatchPanel({
         </div>
       </div>
 
-      {/* ===== Prediction + Form + Standings ===== */}
       <div className="bg-surface-1 rounded-sm py-5 px-7">
         {/* Prediction */}
         <div className="pb-5">
@@ -528,110 +598,69 @@ export default function MatchPanel({
           </Button>
         </div>
 
-        {/* Form + Standings */}
-        <div className="pt-4 pb-6 rounded-xs">
-          <div className="py-4">
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <Ticker className="block mb-3">
-                  Form · {match.homeTeam.shortName}
-                </Ticker>
-                {homeFormRows && homeTeamId !== null ? (
-                  homeFormRows.map((m) => (
-                    <FormRow key={m.id} match={m} teamId={homeTeamId} />
-                  ))
-                ) : (
-                  <Ticker>No data</Ticker>
+        {/* Form + Standings Tabs */}
+        <div className="pt-4">
+          <Tabs defaultValue="form">
+            <TabsList className="bg-transparent p-0 gap-8 justify-start mb-4 h-auto">
+              <TabsTrigger
+                value="form"
+                className={cn(
+                  "bg-transparent p-0 text-sm border-0",
+                  "text-foreground-muted",
+                  "data-[state=active]:bg-transparent",
+                  "data-[state=active]:text-foreground",
+                  "data-[state=active]:shadow-none",
                 )}
-              </div>
-
-              <div>
-                <Ticker className="block mb-3">
-                  Form · {match.awayTeam.shortName}
-                </Ticker>
-                {awayFormRows && awayTeamId !== null ? (
-                  awayFormRows.map((m) => (
-                    <FormRow key={m.id} match={m} teamId={awayTeamId} />
-                  ))
-                ) : (
-                  <Ticker>No data</Ticker>
+              >
+                Form
+              </TabsTrigger>
+              <TabsTrigger
+                value="standings"
+                className={cn(
+                  "bg-transparent p-0 text-sm border-0",
+                  "text-foreground-muted",
+                  "data-[state=active]:bg-transparent",
+                  "data-[state=active]:text-foreground",
+                  "data-[state=active]:shadow-none",
                 )}
-              </div>
-            </div>
-          </div>
+              >
+                Standings
+              </TabsTrigger>
+            </TabsList>
 
-          {standings &&
-            (() => {
-              const homeGroup = standings.find((group) =>
-                group.some((e) => e.team.id === match.homeTeam.id),
-              );
-              const awayGroup = standings.find((group) =>
-                group.some((e) => e.team.id === match.awayTeam.id),
-              );
-              const isSameGroup = homeGroup === awayGroup;
-
-              if (!homeGroup && !awayGroup) return null;
-
-              if (isSameGroup && homeGroup) {
-                return (
-                  <div className="pt-4">
-                    <Ticker className="block mb-3">
-                      {shouldFilterStandings
-                        ? "League standings"
-                        : "Group standings"}
-                    </Ticker>
-                    {renderStandingsTable(
-                      shouldFilterStandings
-                        ? homeGroup.filter(
-                            (e) =>
-                              e.team.id === match.homeTeam.id ||
-                              e.team.id === match.awayTeam.id,
-                          )
-                        : homeGroup,
-                      match.homeTeam.id,
-                      match.awayTeam.id,
-                    )}
-                  </div>
-                );
-              }
-
-              return (
-                <div className="pt-4">
-                  <div className="grid grid-cols-2 gap-6">
-                    {homeGroup && (
-                      <div>
-                        <Ticker className="block mb-3">
-                          {match.homeTeam.shortName} group
-                        </Ticker>
-                        {renderStandingsTable(
-                          shouldFilterStandings
-                            ? homeGroup.filter(
-                                (e) => e.team.id === match.homeTeam.id,
-                              )
-                            : homeGroup,
-                          match.homeTeam.id,
-                        )}
-                      </div>
-                    )}
-                    {awayGroup && (
-                      <div>
-                        <Ticker className="block mb-3">
-                          {match.awayTeam.shortName} group
-                        </Ticker>
-                        {renderStandingsTable(
-                          shouldFilterStandings
-                            ? awayGroup.filter(
-                                (e) => e.team.id === match.awayTeam.id,
-                              )
-                            : awayGroup,
-                          match.awayTeam.id,
-                        )}
-                      </div>
-                    )}
-                  </div>
+            <TabsContent value="form">
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <Ticker className="block mb-3">
+                    {match.homeTeam.shortName}
+                  </Ticker>
+                  {homeFormRows && homeTeamId !== null ? (
+                    homeFormRows.map((m) => (
+                      <FormRow key={m.id} match={m} teamId={homeTeamId} />
+                    ))
+                  ) : (
+                    <Ticker>No data</Ticker>
+                  )}
                 </div>
-              );
-            })()}
+                <div>
+                  <Ticker className="block mb-3">
+                    {match.awayTeam.shortName}
+                  </Ticker>
+                  {awayFormRows && awayTeamId !== null ? (
+                    awayFormRows.map((m) => (
+                      <FormRow key={m.id} match={m} teamId={awayTeamId} />
+                    ))
+                  ) : (
+                    <Ticker>No data</Ticker>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="standings">
+              {standingsContent ?? <Ticker>No standings available</Ticker>}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
