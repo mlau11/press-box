@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { LiveDot, Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import { leagueLabel, WC_STAGES } from "@/constants";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useAuthModal } from "@/features/auth/context/AuthModalContext";
@@ -67,15 +67,15 @@ const renderStandingsTable = (
 ) => (
   <div className="overflow-hidden">
     <div className="grid grid-cols-[auto_1fr_auto_auto_auto_auto_auto_auto_auto] items-center gap-x-2 py-2 border-b border-border">
-      <Ticker className="w-5 text-center">#</Ticker>
-      <Ticker>Club</Ticker>
-      <Ticker className="w-5 text-center">W</Ticker>
-      <Ticker className="w-5 text-center">D</Ticker>
-      <Ticker className="w-5 text-center">L</Ticker>
-      <Ticker className="w-5 text-center">GF</Ticker>
-      <Ticker className="w-5 text-center">GA</Ticker>
-      <Ticker className="w-5 text-center">GD</Ticker>
-      <Ticker className="w-6 text-center">Pts</Ticker>
+      <Label className="w-5 text-center">#</Label>
+      <Label>Club</Label>
+      <Label className="w-5 text-center">W</Label>
+      <Label className="w-5 text-center">D</Label>
+      <Label className="w-5 text-center">L</Label>
+      <Label className="w-5 text-center">GF</Label>
+      <Label className="w-5 text-center">GA</Label>
+      <Label className="w-5 text-center">GD</Label>
+      <Label className="w-6 text-center">Pts</Label>
     </div>
     {rows.map((entry) => {
       const isHighlighted = highlightIds.includes(entry.team.id);
@@ -273,9 +273,9 @@ export default function MatchPanel({
         if (isSameGroup && homeGroup) {
           return (
             <div>
-              <Ticker className="block mb-3">
+              <Label className="block mb-3">
                 {homeGroup.group ?? "Group standings"}
-              </Ticker>
+              </Label>
               {renderStandingsTable(
                 shouldFilterStandings
                   ? homeGroup.table.filter(
@@ -295,9 +295,9 @@ export default function MatchPanel({
           <div className="grid grid-cols-2 gap-6">
             {homeGroup && (
               <div>
-                <Ticker className="block mb-3">
+                <Label className="block mb-3">
                   {homeGroup.group ?? "Home group"}
-                </Ticker>
+                </Label>
                 {renderStandingsTable(
                   shouldFilterStandings
                     ? homeGroup.table.filter(
@@ -310,9 +310,9 @@ export default function MatchPanel({
             )}
             {awayGroup && (
               <div>
-                <Ticker className="block mb-3">
+                <Label className="block mb-3">
                   {awayGroup.group ?? "Away group"}
-                </Ticker>
+                </Label>
                 {renderStandingsTable(
                   shouldFilterStandings
                     ? awayGroup.table.filter(
@@ -379,17 +379,17 @@ export default function MatchPanel({
 
         <div className="relative px-6 pt-4 pb-6">
           <div className="flex items-center justify-between mb-6">
-            <Ticker>
+            <Label>
               {leagueLabel[leagueCode] ?? leagueCode}
               {match.matchday
                 ? ` · Matchday ${match.matchday}`
                 : stageLabel
                   ? ` · ${stageLabel}`
                   : ""}
-            </Ticker>
-            <Ticker>
+            </Label>
+            <Label>
               {date} · {time}
-            </Ticker>
+            </Label>
           </div>
 
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6">
@@ -437,7 +437,7 @@ export default function MatchPanel({
                   <span className="text-[44px] leading-none text-foreground tabular-nums">
                     {time}
                   </span>
-                  <Ticker>Kick-off</Ticker>
+                  <Label>Kick-off</Label>
                   {label && (
                     <div className="mt-1">
                       <Pill variant="neutral">{label}</Pill>
@@ -631,34 +631,34 @@ export default function MatchPanel({
             <TabsContent value="form">
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <Ticker className="block mb-3">
+                  <Label className="block mb-3">
                     {match.homeTeam.shortName}
-                  </Ticker>
+                  </Label>
                   {homeFormRows && homeTeamId !== null ? (
                     homeFormRows.map((m) => (
                       <FormRow key={m.id} match={m} teamId={homeTeamId} />
                     ))
                   ) : (
-                    <Ticker>No data</Ticker>
+                    <Label>No data</Label>
                   )}
                 </div>
                 <div>
-                  <Ticker className="block mb-3">
+                  <Label className="block mb-3">
                     {match.awayTeam.shortName}
-                  </Ticker>
+                  </Label>
                   {awayFormRows && awayTeamId !== null ? (
                     awayFormRows.map((m) => (
                       <FormRow key={m.id} match={m} teamId={awayTeamId} />
                     ))
                   ) : (
-                    <Ticker>No data</Ticker>
+                    <Label>No data</Label>
                   )}
                 </div>
               </div>
             </TabsContent>
 
             <TabsContent value="standings">
-              {standingsContent ?? <Ticker>No standings available</Ticker>}
+              {standingsContent ?? <Label>No standings available</Label>}
             </TabsContent>
           </Tabs>
         </div>

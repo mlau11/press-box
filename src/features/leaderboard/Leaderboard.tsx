@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useProfileStats } from "@/features/profile/hooks/useProfile";
 import { Medal, Trophy } from "lucide-react";
@@ -51,11 +51,11 @@ function PodiumCard({
           >
             {entry.total_points}
           </span>
-          <Ticker>PTS</Ticker>
+          <Label>PTS</Label>
         </div>
-        <Ticker>
+        <Label>
           <span>{entry.avg_points_per_prediction}</span> avg per pick
-        </Ticker>
+        </Label>
       </div>
     </div>
   );
@@ -81,7 +81,7 @@ export default function Leaderboard() {
     if (totalPredictions >= 5 && scoredPredictions < 5) {
       return (
         <div className="text-center py-6 mb-4 rounded-lg border border-dashed border-border">
-          <Ticker className="block mb-1">ALMOST THERE</Ticker>
+          <Label className="block mb-1">ALMOST THERE</Label>
           <p className="text-sm text-foreground-muted">
             You've made {totalPredictions} predictions. You'll appear once
             they're scored after matches finish.
@@ -122,7 +122,7 @@ export default function Leaderboard() {
         <LeaderboardSkeleton />
       ) : isError ? (
         <p className="py-12 text-center">
-          <Ticker>Failed to load leaderboard. Please try again later.</Ticker>
+          <Label>Failed to load leaderboard. Please try again later.</Label>
         </p>
       ) : (
         <>
@@ -181,10 +181,10 @@ export default function Leaderboard() {
               )}
 
               <div className="text-center">
-                <Ticker>
+                <Label>
                   Showing {data.length} predictor{data.length !== 1 ? "s" : ""}{" "}
                   · Five predictions minimum
-                </Ticker>
+                </Label>
               </div>
             </>
           )}

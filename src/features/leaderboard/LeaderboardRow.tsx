@@ -1,4 +1,4 @@
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import { Link } from "react-router-dom";
 import type { LeaderboardEntry } from "./hooks/useLeaderboard";
 
@@ -31,7 +31,7 @@ export default function LeaderboardRow({
 
       <span className="text-sm font-medium text-foreground truncate">
         {entry.username}
-        {isCurrentUser && <Ticker className="ml-2 text-accent">YOU</Ticker>}
+        {isCurrentUser && <Label className="ml-2 text-accent">YOU</Label>}
       </span>
 
       <span className="tabular-nums text-sm text-right text-foreground-muted">

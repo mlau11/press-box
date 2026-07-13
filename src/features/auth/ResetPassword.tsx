@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -77,7 +77,7 @@ export default function ResetPassword() {
         <div className="h-1 bg-primary" />
         <div className="px-7 pt-6 pb-7 flex flex-col gap-5">
           <div>
-            <Ticker className="uppercase block mb-2.5">Step 2 of 2</Ticker>
+            <Label className="uppercase block mb-2.5">Step 2 of 2</Label>
             <h2 className="text-[42px] leading-none tracking-[0.02em]">
               New Password.
             </h2>
@@ -109,7 +109,7 @@ export default function ResetPassword() {
               )}
 
               <div className="flex flex-col gap-1.5">
-                <Ticker className="uppercase">New Password</Ticker>
+                <Label className="uppercase">New Password</Label>
                 <Input
                   type="password"
                   value={password}
@@ -121,7 +121,7 @@ export default function ResetPassword() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Ticker className="uppercase">Confirm Password</Ticker>
+                <Label className="uppercase">Confirm Password</Label>
                 <Input
                   type="password"
                   value={confirmPassword}

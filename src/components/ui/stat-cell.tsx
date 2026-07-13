@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Ticker } from "./typography";
+import { Label } from "./typography";
 
 export function StatCell({
   topLabel,
@@ -19,9 +19,9 @@ export function StatCell({
         className,
       )}
     >
-      <Ticker>{topLabel}</Ticker>
+      <Label>{topLabel}</Label>
       <div className="text-[56px] leading-none tabular-nums">{value}</div>
-      {bottomLabel && <Ticker>{bottomLabel}</Ticker>}
+      {bottomLabel && <Label>{bottomLabel}</Label>}
     </div>
   );
 }

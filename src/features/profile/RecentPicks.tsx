@@ -1,5 +1,5 @@
 import { Pill } from "@/components/ui/pill";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import type { RecentPick } from "./hooks/useProfile";
 
 const outcomeVariant = (points: number) => {
@@ -17,7 +17,7 @@ const outcomeLabel = (points: number) => {
 function ScoreCol({ score, label }: { score: string; label: string }) {
   return (
     <div className="flex flex-col items-center gap-0.5 min-w-[52px]">
-      <Ticker className="text-[12px] leading-none">{label}</Ticker>
+      <Label className="text-[12px] leading-none">{label}</Label>
       <span className="text-sm tracking-[0.02em] tabular-nums text-foreground leading-none">
         {score}
       </span>
@@ -34,7 +34,7 @@ export default function RecentPicks({ picks }: { picks: RecentPick[] }) {
         <span className="text-sm font-medium text-foreground">
           Recent picks
         </span>
-        <Ticker>{picks.length} SCORED</Ticker>
+        <Label>{picks.length} SCORED</Label>
       </div>
 
       <div className="flex flex-col">

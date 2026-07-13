@@ -1,5 +1,5 @@
 import { StatCell } from "@/components/ui/stat-cell";
-import { Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { formatJoinDate } from "@/utils/formatDate";
 import { Link, useParams } from "react-router-dom";
@@ -49,11 +49,11 @@ export default function Profile() {
           {initial}
         </span>
         <div className="flex flex-col gap-1 min-w-0">
-          <Ticker>PREDICTOR</Ticker>
+          <Label>PREDICTOR</Label>
           <h1 className=" text-[52px] leading-none tracking-[0.02em] uppercase truncate">
             {profile.username}
           </h1>
-          <Ticker>Joined {formatJoinDate(profile.created_at)}</Ticker>
+          <Label>Joined {formatJoinDate(profile.created_at)}</Label>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label, Ticker } from "@/components/ui/typography";
+import { Label } from "@/components/ui/typography";
 import { useState } from "react";
 import { useAuthModal } from "./context/AuthModalContext";
 import { useAuth } from "./hooks/useAuth";
@@ -166,7 +166,7 @@ export default function AuthModal() {
                   Enter your email and we'll send a reset link.
                 </p>
                 <div className="flex flex-col gap-1.5">
-                  <Ticker className="uppercase">Email</Ticker>
+                  <Label className="uppercase">Email</Label>
                   <Input
                     type="email"
                     value={email}
@@ -196,7 +196,7 @@ export default function AuthModal() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {mode === "signup" && (
                 <div className="flex flex-col gap-1.5">
-                  <Ticker className="uppercase">Username</Ticker>
+                  <Label className="uppercase">Username</Label>
                   <Input
                     type="text"
                     value={username}
@@ -208,7 +208,7 @@ export default function AuthModal() {
                 </div>
               )}
               <div className="flex flex-col gap-1.5">
-                <Ticker className="uppercase">Email</Ticker>
+                <Label className="uppercase">Email</Label>
                 <Input
                   type="email"
                   value={email}
@@ -220,7 +220,7 @@ export default function AuthModal() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <Ticker className="uppercase">Password</Ticker>
+                  <Label className="uppercase">Password</Label>
                   {mode === "signin" && (
                     <button
                       type="button"
@@ -262,7 +262,7 @@ export default function AuthModal() {
             <>
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-px bg-border" />
-                <Ticker>or</Ticker>
+                <Label>or</Label>
                 <div className="flex-1 h-px bg-border" />
               </div>
 
