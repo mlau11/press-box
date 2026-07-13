@@ -10,13 +10,14 @@ import { cn } from "@/lib/utils";
 import type { Match, Prediction } from "@/types/index";
 import { formatKickoff, getFormResult, statusLabel } from "@/utils/matches";
 import { useEffect, useRef, useState } from "react";
-import MatchPanelSkeleton from "./MatchPanelSkeleton";
 import {
   useStandings,
   useTeamForm,
   type FormMatch,
   type StandingEntry,
 } from "./hooks/useMatchStats";
+import MatchPanelSkeleton from "./MatchPanelSkeleton";
+import { ScoreInput } from "./ScoreInput";
 
 interface MatchPanelProps {
   match: Match | null;
@@ -51,8 +52,10 @@ function FormRow({ match, teamId }: { match: FormMatch; teamId: number }) {
       <span className="text-sm text-foreground truncate">
         {opponent.shortName}
       </span>
-      <span className="text-sm tabular-nums text-foreground-muted">
-        {teamScore ?? 0}-{opponentScore ?? 0}
+      <span className="text-sm text-foreground-muted flex items-center justify-center gap-0.5">
+        <span className="tabular-nums">{teamScore}</span>
+        <span className="text-foreground-dim">-</span>
+        <span className="tabular-nums">{opponentScore}</span>
       </span>
       <span className={cn("text-sm font-medium w-4 text-right", resultColor)}>
         {result}
@@ -123,7 +126,7 @@ const renderStandingsTable = (
 const stepperButtonClasses = cn(
   "w-[38px] h-7 rounded",
   "border border-border",
-  "text-foreground-muted",
+  "text-foreground-muted cursor-pointer",
   "hover:text-foreground hover:border-border-strong",
   "active:translate-y-px active:bg-surface-4 active:border-border-strong",
   "disabled:opacity-50 disabled:pointer-events-none",
@@ -131,7 +134,7 @@ const stepperButtonClasses = cn(
 );
 
 const quickPickButtonClasses = cn(
-  "flex items-center justify-center gap-1",
+  "flex items-center justify-center gap-0.5",
   "border border-border rounded px-2.5 py-1.5",
   "text-xs text-foreground-muted cursor-pointer",
   "hover:text-foreground hover:border-border-strong",
@@ -140,17 +143,6 @@ const quickPickButtonClasses = cn(
   "transition-all",
 );
 
-const scoreInputClasses = (isEditable: boolean) =>
-  cn(
-    "w-32 rounded-md bg-surface-4 py-6",
-    "text-center text-[56px] leading-none tabular-nums",
-    "text-foreground placeholder:text-foreground-dim",
-    "border border-transparent outline-none",
-    "focus:border-primary",
-    "transition-all",
-    !isEditable && "cursor-not-allowed",
-  );
-
 export default function MatchPanel({
   match,
   existingPrediction,
@@ -158,6 +150,8 @@ export default function MatchPanel({
 }: MatchPanelProps) {
   const [homeScore, setHomeScore] = useState("");
   const [awayScore, setAwayScore] = useState("");
+  const [homeAnimated, setHomeAnimated] = useState(true);
+  const [awayAnimated, setAwayAnimated] = useState(true);
   const prevUserRef = useRef<string | null>(null);
 
   const { user } = useAuthContext();
@@ -184,14 +178,16 @@ export default function MatchPanel({
     : null;
 
   useEffect(() => {
+    setHomeScore("");
+    setAwayScore("");
+  }, [match?.id]);
+
+  useEffect(() => {
     if (existingPrediction) {
       setHomeScore(existingPrediction.predicted_home.toString());
       setAwayScore(existingPrediction.predicted_away.toString());
-    } else {
-      setHomeScore("");
-      setAwayScore("");
     }
-  }, [match?.id, existingPrediction]);
+  }, [existingPrediction]);
 
   useEffect(() => {
     const currentUserId = user?.id ?? null;
@@ -235,10 +231,15 @@ export default function MatchPanel({
       match.stage)
     : null;
 
-  const bumpHome = (delta: number) =>
+  const bumpHome = (delta: number) => {
+    setHomeAnimated(true);
     setHomeScore(String(Math.max(0, (parseInt(homeScore) || 0) + delta)));
-  const bumpAway = (delta: number) =>
+  };
+
+  const bumpAway = (delta: number) => {
+    setAwayAnimated(true);
     setAwayScore(String(Math.max(0, (parseInt(awayScore) || 0) + delta)));
+  };
 
   const handleSubmit = () => {
     if (homeScore === "" || awayScore === "") return;
@@ -471,18 +472,12 @@ export default function MatchPanel({
           <div className="grid grid-cols-2 gap-6 items-center mb-4">
             {/* Home */}
             <div className="flex flex-col gap-1.5 items-center">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="0"
+              <ScoreInput
                 value={homeScore}
-                readOnly={!isEditable}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "" || /^[0-9]{0,2}$/.test(val)) setHomeScore(val);
-                }}
-                className={scoreInputClasses(isEditable)}
+                onChange={setHomeScore}
+                animated={homeAnimated}
+                isEditable={isEditable}
+                ariaLabel="Home score"
               />
               <div className="flex justify-center gap-1.5">
                 <button
@@ -508,18 +503,12 @@ export default function MatchPanel({
 
             {/* Away */}
             <div className="flex flex-col gap-1.5 items-center">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="0"
+              <ScoreInput
                 value={awayScore}
-                readOnly={!isEditable}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "" || /^[0-9]{0,2}$/.test(val)) setAwayScore(val);
-                }}
-                className={scoreInputClasses(isEditable)}
+                onChange={setAwayScore}
+                animated={awayAnimated}
+                isEditable={isEditable}
+                ariaLabel="Away score"
               />
               <div className="flex justify-center gap-1.5">
                 <button
@@ -580,7 +569,7 @@ export default function MatchPanel({
             disabled={
               !isEditable || isPending || homeScore === "" || awayScore === ""
             }
-            className="w-full py-3 text-sm active:translate-y-px active:brightness-90 transition-all"
+            className="w-full py-3 text-sm active:translate-y-px active:brightness-90 transition-all cursor-pointer"
           >
             {!isEditable
               ? isFinished
