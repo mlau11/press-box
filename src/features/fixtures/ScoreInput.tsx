@@ -16,7 +16,7 @@ export function ScoreInput({ value, isEditable }: ScoreInputProps) {
       animated={true}
       willChange
       className={cn(
-        "w-32 rounded-md bg-surface-4 py-6",
+        "w-32 rounded-xs bg-surface-4 py-6",
         "flex items-center justify-center",
         "h-[112px]",
         "text-center text-[56px] leading-none tabular-nums",

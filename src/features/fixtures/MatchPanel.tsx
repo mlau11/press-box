@@ -543,7 +543,7 @@ export default function MatchPanel({
             disabled={
               !isEditable || isPending || homeScore === "" || awayScore === ""
             }
-            className="w-full py-3 text-sm active:translate-y-px active:brightness-90 transition-all cursor-pointer"
+            className="w-full py-3 rounded-sm text-sm active:translate-y-px active:brightness-90 transition-all cursor-pointer"
           >
             {!isEditable
               ? isFinished
