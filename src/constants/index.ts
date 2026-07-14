@@ -30,9 +30,9 @@ export const CL_STAGES: WCStage[] = [
 ];
 
 export const LEAGUES = [
-  { code: "WC", label: "World Cup", stages: WC_STAGES },
+  { code: "WC", label: "World Cup" },
   { code: "PL", label: "Premier League" },
-  { code: "CL", label: "Champions League", stages: CL_STAGES },
+  { code: "CL", label: "Champions League" },
   { code: "BL1", label: "Bundesliga" },
   { code: "SA", label: "Serie A" },
   { code: "FL1", label: "Ligue 1" },
