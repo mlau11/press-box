@@ -472,13 +472,7 @@ export default function MatchPanel({
           <div className="grid grid-cols-2 gap-6 items-center mb-4">
             {/* Home */}
             <div className="flex flex-col gap-1.5 items-center">
-              <ScoreInput
-                value={homeScore}
-                onChange={setHomeScore}
-                animated={homeAnimated}
-                isEditable={isEditable}
-                ariaLabel="Home score"
-              />
+              <ScoreInput value={homeScore} isEditable={isEditable} />
               <div className="flex justify-center gap-1.5">
                 <button
                   type="button"
@@ -503,13 +497,7 @@ export default function MatchPanel({
 
             {/* Away */}
             <div className="flex flex-col gap-1.5 items-center">
-              <ScoreInput
-                value={awayScore}
-                onChange={setAwayScore}
-                animated={awayAnimated}
-                isEditable={isEditable}
-                ariaLabel="Away score"
-              />
+              <ScoreInput value={awayScore} isEditable={isEditable} />
               <div className="flex justify-center gap-1.5">
                 <button
                   type="button"
