@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-
 export default function MatchPanelSkeleton() {
   return (
     <div className="flex flex-col gap-4 animate-pulse">
@@ -55,8 +53,6 @@ export default function MatchPanelSkeleton() {
           <div className="h-10 w-full bg-muted rounded-md" />
         </div>
 
-        {/* Form + Standings tabs — real tab labels, only "Form" content skeletoned
-            since Form is the default tab and Standings isn't visible until clicked */}
         <div className="pt-4">
           <div className="flex gap-8 mb-4">
             <span className="text-sm text-foreground border-0">Form</span>
