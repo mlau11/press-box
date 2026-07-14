@@ -206,7 +206,7 @@ export default function MatchPanel({
       userId: user!.id,
       matchId: match.id,
       leagueCode,
-      matchday: match.matchday ?? 0,
+      matchday: match.matchday,
       predictedHome: parseInt(homeScore),
       predictedAway: parseInt(awayScore),
       matchData,
@@ -253,7 +253,7 @@ export default function MatchPanel({
       userId: user.id,
       matchId: match.id,
       leagueCode,
-      matchday: match.matchday ?? 0,
+      matchday: match.matchday,
       predictedHome: parseInt(homeScore),
       predictedAway: parseInt(awayScore),
       matchData,
@@ -301,14 +301,7 @@ export default function MatchPanel({
                     {getGroupLabel(homeGroup.group)}
                   </Label>
                 )}
-                {renderStandingsTable(
-                  shouldFilterStandings
-                    ? homeGroup.table.filter(
-                        (e) => e.team.id === match.homeTeam.id,
-                      )
-                    : homeGroup.table,
-                  match.homeTeam.id,
-                )}
+                {renderStandingsTable(homeGroup.table, match.homeTeam.id)}
               </div>
             )}
             {awayGroup && (
@@ -318,14 +311,7 @@ export default function MatchPanel({
                     {getGroupLabel(awayGroup.group)}
                   </Label>
                 )}
-                {renderStandingsTable(
-                  shouldFilterStandings
-                    ? awayGroup.table.filter(
-                        (e) => e.team.id === match.awayTeam.id,
-                      )
-                    : awayGroup.table,
-                  match.awayTeam.id,
-                )}
+                {renderStandingsTable(awayGroup.table, match.awayTeam.id)}
               </div>
             )}
           </div>
@@ -469,10 +455,6 @@ export default function MatchPanel({
       <div className="bg-surface-1 rounded-sm py-5 px-7">
         {/* Prediction */}
         <div className="pb-5">
-          <p className="text-base text-foreground mb-5">
-            What's the verdict, pundit?
-          </p>
-
           <div className="grid grid-cols-2 gap-6 items-center mb-4">
             {/* Home */}
             <div className="flex flex-col gap-1.5 items-center">

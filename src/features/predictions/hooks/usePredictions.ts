@@ -14,7 +14,7 @@ const submitPrediction = async ({
   userId: string;
   matchId: number;
   leagueCode: string;
-  matchday: number;
+  matchday: number | null;
   predictedHome: number;
   predictedAway: number;
   matchData: {
