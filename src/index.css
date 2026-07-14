@@ -96,7 +96,7 @@
     height: 100vh;
     z-index: -1;
     background: radial-gradient(
-      ellipse 150% 200% at 40% 40%,
+      ellipse 150% 130% at 40% 40%,
       #162330 0%,
       #101c28 20%,
       #0c151f 40%,
