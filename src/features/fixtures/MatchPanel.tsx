@@ -123,6 +123,11 @@ const renderStandingsTable = (
   </div>
 );
 
+const getGroupLabel = (group: string | null): string | null => {
+  if (!group || group === "Matchday") return null;
+  return group;
+};
+
 const stepperButtonClasses = cn(
   "w-[38px] h-7 rounded",
   "border border-border",
@@ -150,8 +155,6 @@ export default function MatchPanel({
 }: MatchPanelProps) {
   const [homeScore, setHomeScore] = useState("");
   const [awayScore, setAwayScore] = useState("");
-  const [homeAnimated, setHomeAnimated] = useState(true);
-  const [awayAnimated, setAwayAnimated] = useState(true);
   const prevUserRef = useRef<string | null>(null);
 
   const { user } = useAuthContext();
@@ -232,12 +235,10 @@ export default function MatchPanel({
     : null;
 
   const bumpHome = (delta: number) => {
-    setHomeAnimated(true);
     setHomeScore(String(Math.max(0, (parseInt(homeScore) || 0) + delta)));
   };
 
   const bumpAway = (delta: number) => {
-    setAwayAnimated(true);
     setAwayScore(String(Math.max(0, (parseInt(awayScore) || 0) + delta)));
   };
 
@@ -262,21 +263,20 @@ export default function MatchPanel({
   const standingsContent = standings
     ? (() => {
         const homeGroup = standings.find((g) =>
-          g.table.some((e) => e.team.id === match.homeTeam.id),
+          g.table?.some((e) => e.team.id === match.homeTeam.id),
         );
         const awayGroup = standings.find((g) =>
-          g.table.some((e) => e.team.id === match.awayTeam.id),
+          g.table?.some((e) => e.team.id === match.awayTeam.id),
         );
         const isSameGroup = homeGroup === awayGroup;
 
         if (!homeGroup && !awayGroup) return null;
 
         if (isSameGroup && homeGroup) {
+          const label = getGroupLabel(homeGroup.group);
           return (
             <div>
-              <Label className="block mb-3">
-                {homeGroup.group ?? "Group standings"}
-              </Label>
+              {label && <Label className="block mb-3">{label}</Label>}
               {renderStandingsTable(
                 shouldFilterStandings
                   ? homeGroup.table.filter(
@@ -296,9 +296,11 @@ export default function MatchPanel({
           <div className="grid grid-cols-2 gap-6">
             {homeGroup && (
               <div>
-                <Label className="block mb-3">
-                  {homeGroup.group ?? "Home group"}
-                </Label>
+                {getGroupLabel(homeGroup.group) && (
+                  <Label className="block mb-3">
+                    {getGroupLabel(homeGroup.group)}
+                  </Label>
+                )}
                 {renderStandingsTable(
                   shouldFilterStandings
                     ? homeGroup.table.filter(
@@ -311,9 +313,11 @@ export default function MatchPanel({
             )}
             {awayGroup && (
               <div>
-                <Label className="block mb-3">
-                  {awayGroup.group ?? "Away group"}
-                </Label>
+                {getGroupLabel(awayGroup.group) && (
+                  <Label className="block mb-3">
+                    {getGroupLabel(awayGroup.group)}
+                  </Label>
+                )}
                 {renderStandingsTable(
                   shouldFilterStandings
                     ? awayGroup.table.filter(
@@ -616,7 +620,7 @@ export default function MatchPanel({
                       <FormRow key={m.id} match={m} teamId={homeTeamId} />
                     ))
                   ) : (
-                    <Label>No data</Label>
+                    <Label>No form data available</Label>
                   )}
                 </div>
                 <div>
@@ -628,7 +632,7 @@ export default function MatchPanel({
                       <FormRow key={m.id} match={m} teamId={awayTeamId} />
                     ))
                   ) : (
-                    <Label>No data</Label>
+                    <Label>No form data available</Label>
                   )}
                 </div>
               </div>
