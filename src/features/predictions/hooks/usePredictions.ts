@@ -29,7 +29,7 @@ const submitPrediction = async ({
   };
 }): Promise<Prediction> => {
   // upsert match data first
-  await supabase.from("matches").upsert(
+  const { error: matchError } = await supabase.from("matches").upsert(
     {
       id: matchId,
       league_code: leagueCode,
@@ -45,6 +45,8 @@ const submitPrediction = async ({
     },
     { onConflict: "id" },
   );
+
+  if (matchError) throw matchError;
 
   // then upsert the prediction
   const { data, error } = await supabase
@@ -64,6 +66,7 @@ const submitPrediction = async ({
     .single();
 
   if (error) throw error;
+
   return data;
 };
 
