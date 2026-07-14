@@ -13,7 +13,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/typography";
-import type { WCStage } from "@/constants";
 import { LEAGUES } from "@/constants";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useUserPredictions } from "@/features/predictions/hooks/usePredictions";
@@ -68,7 +67,6 @@ interface LeagueFixturesProps {
   onMatchSelect: (match: Match) => void;
   onAutoSelect: (match: Match) => void;
   onMatchesLoad: (matchIds: number[]) => void;
-  stages: WCStage[] | null;
 }
 
 function LeagueFixtures({
@@ -179,7 +177,8 @@ function LeagueFixtures({
           onClick={handlePrev}
           disabled={isPrevDisabled}
           aria-label="Previous date"
-          className="p-1 text-foreground-muted hover:text-foreground disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          className="p-1 cursor-pointer text-foreground-muted hover:text-foreground 
+            disabled:opacity-30 disabled:pointer-events-none transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -187,7 +186,8 @@ function LeagueFixtures({
         <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
             <button
-              className="flex items-center gap-1 text-sm text-foreground hover:text-foreground-muted transition-colors"
+              className="flex items-center gap-1 text-sm text-foreground 
+                hover:text-foreground-muted transition-colors cursor-pointer"
               aria-label="Open date picker"
             >
               {selectedDate ? formatNavigatorDate(selectedDate) : "—"}
@@ -211,7 +211,8 @@ function LeagueFixtures({
           onClick={handleNext}
           disabled={isNextDisabled}
           aria-label="Next date"
-          className="p-1 text-foreground-muted hover:text-foreground disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          className="p-1 cursor-pointer text-foreground-muted hover:text-foreground 
+            disabled:opacity-30 disabled:pointer-events-none transition-colors"
         >
           <ChevronRight className="w-4 h-4" />
         </button>
@@ -312,7 +313,6 @@ export default function Fixtures() {
         {activeLeagueData && (
           <LeagueFixtures
             leagueCode={activeLeagueData.code}
-            stages={activeLeagueData.stages ?? null}
             activeMatch={activeMatch}
             onMatchSelect={handleMatchSelect}
             onAutoSelect={handleAutoSelect}
