@@ -1,38 +1,13 @@
 import NumberFlow from "@number-flow/react";
-import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ScoreInputProps {
   value: string;
-  onChange: (value: string) => void;
   isEditable: boolean;
-  animated: boolean;
-  onAnimationsStart?: () => void;
-  onAnimationsFinish?: () => void;
-  ariaLabel?: string;
 }
 
-export function ScoreInput({
-  value,
-  onChange,
-  isEditable,
-  ariaLabel,
-}: ScoreInputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [showCaret, setShowCaret] = useState(true);
-
+export function ScoreInput({ value, isEditable }: ScoreInputProps) {
   const numericValue = value === "" ? 0 : parseInt(value) || 0;
-
-  const handleInput: React.FormEventHandler<HTMLInputElement> = ({
-    currentTarget: el,
-  }) => {
-    const val = el.value;
-    if (val === "" || /^[0-9]{0,2}$/.test(val)) {
-      onChange(val);
-    } else {
-      el.value = value;
-    }
-  };
 
   return (
     <NumberFlow
