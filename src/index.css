@@ -23,6 +23,7 @@
 
   --border: oklch(1 0 0 / 0.08);
   --border-strong: oklch(1 0 0 / 0.16);
+  --border-stronger: oklch(1 0 0 / 0.32);
   --input: oklch(1 0 0 / 0.12);
   --ring: oklch(1 0 0 / 0.4);
 
@@ -69,6 +70,7 @@
   --color-foreground-dim: var(--foreground-dim);
 
   --color-border-strong: var(--border-strong);
+  --color-border-stronger: var(--border-stronger);
   --color-success: var(--success);
 
   --radius-xs: calc(var(--radius) * 0.4);
