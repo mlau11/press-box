@@ -48,8 +48,8 @@ export default function Navbar() {
 
   return (
     <nav className="w-full transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
-        <div className="flex items-center justify-start shrink-0">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6 md:grid md:grid-cols-[1fr_auto_1fr] md:justify-normal">
+        <div className="flex items-center justify-start shrink-0 md:justify-self-start">
           <Link
             to="/"
             className="flex items-center gap-2.5 text-foreground hover:opacity-90 transition-opacity"
@@ -60,7 +60,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <div className="hidden md:flex flex-1 items-center justify-center gap-1">
+        <div className="hidden md:flex items-center justify-center gap-1">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.path}
