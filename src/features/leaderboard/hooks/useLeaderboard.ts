@@ -6,6 +6,7 @@ export interface LeaderboardEntry {
   username: string;
   total_points: number;
   avg_points_per_prediction: number;
+  accuracy_pct: number;
 }
 
 const fetchLeaderboard = async (): Promise<LeaderboardEntry[]> => {
