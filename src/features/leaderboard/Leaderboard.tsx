@@ -1,60 +1,73 @@
 import { Button } from "@/components/ui/button";
+import { Pill } from "@/components/ui/pill";
 import { Label } from "@/components/ui/typography";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useProfileStats } from "@/features/profile/hooks/useProfile";
-import { Medal, Trophy } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useLeaderboard } from "./hooks/useLeaderboard";
+import { useLeaderboard, type LeaderboardEntry } from "./hooks/useLeaderboard";
 import LeaderboardRow from "./LeaderboardRow";
 import LeaderboardSkeleton from "./LeaderboardSkeleton";
 
 function PodiumCard({
   entry,
   rank,
+  isCurrentUser,
 }: {
-  entry: {
-    username: string;
-    total_points: number;
-    avg_points_per_prediction: number;
-  };
+  entry: LeaderboardEntry;
   rank: 1 | 2 | 3;
+  isCurrentUser: boolean;
 }) {
-  const medal =
-    rank === 1 ? (
-      <Trophy className="w-8 h-8 text-amber-400" />
-    ) : rank === 2 ? (
-      <Medal className="w-7 h-7 text-zinc-400" />
-    ) : (
-      <Medal className="w-7 h-7 text-amber-700" />
-    );
+  const sizeClasses = {
+    1: "py-8 px-6",
+    2: "py-6 px-6",
+    3: "py-6 px-6",
+  }[rank];
+
+  const pointsSize = { 1: 64, 2: 44, 3: 44 }[rank];
+  const iconSize = { 1: "w-8 h-8", 2: "w-6 h-6", 3: "w-6 h-6" }[rank];
+
   return (
     <div
-      className={[
-        "relative bg-surface-3 border border-border rounded-lg overflow-hidden",
-        "p-6 flex flex-col items-center text-center",
-        rank === 1 ? "md:scale-105 md:-translate-y-2 border-accent/30" : "",
-      ].join(" ")}
+      className={cn(
+        "relative bg-surface-1 border rounded-lg overflow-hidden",
+        sizeClasses,
+        "flex flex-col items-center text-center",
+        rank === 1 ? "md:scale-105 md:-translate-y-2" : "",
+        isCurrentUser ? "border-2 border-foreground" : "border-border",
+      )}
     >
       <span
         aria-hidden="true"
-        className="absolute -top-6 -right-3 text-[180px] leading-none opacity-[0.05] pointer-events-none select-none"
+        className="absolute -top-8 -right-4 text-[180px] leading-none opacity-[0.05] pointer-events-none select-none"
       >
         {rank}
       </span>
+
+      {isCurrentUser && (
+        <div className="absolute top-3 left-3">
+          <Pill>You</Pill>
+        </div>
+      )}
+
       <div className="relative flex flex-col items-center gap-2">
-        <div className="text-3xl">{medal}</div>
+        <Trophy
+          className={cn(iconSize, "text-foreground-muted")}
+          aria-hidden="true"
+        />
         <div className="font-medium">{entry.username}</div>
         <div className="flex items-baseline gap-2">
           <span
             className="tabular-nums leading-none"
-            style={{ fontSize: rank === 1 ? 64 : 48 }}
+            style={{ fontSize: pointsSize }}
           >
             {entry.total_points}
           </span>
           <Label>PTS</Label>
         </div>
         <Label>
-          <span>{entry.avg_points_per_prediction}</span> avg per pick
+          <span>{entry.avg_points_per_prediction.toFixed(1)}</span> avg per pick
         </Label>
       </div>
     </div>
@@ -77,25 +90,27 @@ export default function Leaderboard() {
 
   const renderProgressBanner = () => {
     if (!user || isOnLeaderboard) return null;
+    if (totalPredictions === 0) return null;
 
-    if (totalPredictions >= 5 && scoredPredictions < 5) {
+    if (scoredPredictions === 0) {
       return (
         <div className="text-center py-6 mb-4 rounded-lg border border-dashed border-border">
-          <Label className="block mb-1">ALMOST THERE</Label>
+          <Label className="block mb-1">YOU'RE IN</Label>
           <p className="text-sm text-foreground-muted">
-            You've made {totalPredictions} predictions. You'll appear once
-            they're scored after matches finish.
+            Your predictions will count toward your score once those matches
+            finish.
           </p>
         </div>
       );
     }
 
-    if (scoredPredictions > 0 && scoredPredictions < 5) {
+    if (scoredPredictions < 5) {
       return (
         <div className="text-center py-6 mb-4 rounded-lg border border-dashed border-border">
           <p className="text-sm font-medium mb-1">
-            You're {5 - scoredPredictions} prediction
-            {5 - scoredPredictions === 1 ? "" : "s"} away from the leaderboard
+            {5 - scoredPredictions} more scored prediction
+            {5 - scoredPredictions === 1 ? "" : "s"} and you'll be eligible for
+            the leaderboard
           </p>
           <p className="text-sm text-foreground-muted">
             {scoredPredictions} of 5 scored so far.
@@ -141,49 +156,70 @@ export default function Leaderboard() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-2">
+              <div className="grid grid-cols-1 gap-4 my-2 md:hidden">
+                {podium.map((entry, i) => (
+                  <PodiumCard
+                    key={entry.user_id}
+                    entry={entry}
+                    rank={(i + 1) as 1 | 2 | 3}
+                    isCurrentUser={entry.user_id === user?.id}
+                  />
+                ))}
+              </div>
+
+              <div className="hidden md:grid md:grid-cols-3 gap-4 my-2">
                 {podiumOrder.map(([entry, rank]) =>
                   entry ? (
                     <PodiumCard
-                      key={entry.username}
+                      key={entry.user_id}
                       entry={entry}
                       rank={rank}
+                      isCurrentUser={entry.user_id === user?.id}
                     />
                   ) : null,
                 )}
               </div>
 
               {rest.length > 0 && (
-                <div className="border-t-2 border-foreground overflow-hidden">
-                  <div className="grid grid-cols-[40px_1fr_100px_80px] gap-3 px-4 py-3 border-b border-border">
-                    <span className="text-xs text-foreground-dim">#</span>
-                    <span className="text-xs text-foreground-dim">
-                      PREDICTOR
-                    </span>
-                    <span className="text-xs text-foreground-dim text-right">
-                      AVG
-                    </span>
-                    <span className="text-xs text-foreground-dim text-right">
-                      PTS
-                    </span>
-                  </div>
-                  <div className="flex flex-col">
-                    {rest.map((entry, idx) => (
-                      <LeaderboardRow
-                        key={entry.user_id}
-                        entry={entry}
-                        rank={idx + 4}
-                        isCurrentUser={entry.user_id === user?.id}
-                      />
-                    ))}
+                <div className="rounded-sm overflow-hidden bg-surface-2">
+                  <div className="grid grid-cols-[72px_1fr_150px_150px_150px] gap-x-px gap-y-0 bg-border-stronger">
+                    <div className="grid grid-cols-subgrid col-span-5 border-b">
+                      <span className="text-sm text-foreground-dim px-4 py-3 bg-surface-2">
+                        Rank
+                      </span>
+                      <span className="text-sm text-foreground px-4 py-3 bg-surface-2">
+                        Predictor
+                      </span>
+                      <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
+                        Accuracy
+                      </span>
+                      <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
+                        Average
+                      </span>
+                      <span className="text-sm text-foreground px-4 py-3 bg-surface-2 text-right font-medium">
+                        Points
+                      </span>
+                    </div>
+                    {rest.map((entry, idx) => {
+                      const rank = idx + 4;
+                      return (
+                        <LeaderboardRow
+                          key={entry.user_id}
+                          entry={entry}
+                          rank={idx + 4}
+                          isCurrentUser={entry.user_id === user?.id}
+                          showBottomBorder={rank % 10 === 0}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}
 
               <div className="text-center">
                 <Label>
-                  Showing {data.length} predictor{data.length !== 1 ? "s" : ""}{" "}
-                  · Five predictions minimum
+                  Showing {data.length} predictor
+                  {data.length !== 1 ? "s" : ""} · Five predictions minimum
                 </Label>
               </div>
             </>
