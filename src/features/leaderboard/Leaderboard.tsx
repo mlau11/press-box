@@ -180,45 +180,41 @@ export default function Leaderboard() {
                 )}
               </div>
 
-              <div className="overflow-x-auto -mx-6 px-6 md:mx-0 md:px-0">
-                <div className="min-w-[840px] rounded-sm overflow-hidden bg-surface-1">
-                  {rest.length > 0 && (
-                    <div className="rounded-sm overflow-hidden bg-surface-2">
-                      <div className="grid grid-cols-[72px_1fr_150px_150px_150px] gap-x-px gap-y-0 bg-foreground-dim rounded-md gap-1">
-                        <div className="grid grid-cols-subgrid col-span-5">
-                          <span className="text-sm text-foreground-dim px-4 py-3 bg-surface-2">
-                            Rank
-                          </span>
-                          <span className="text-sm text-foreground px-4 py-3 bg-surface-2">
-                            Predictor
-                          </span>
-                          <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
-                            Accuracy
-                          </span>
-                          <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
-                            Average
-                          </span>
-                          <span className="text-sm text-foreground px-4 py-3 bg-surface-2 text-right font-medium">
-                            Points
-                          </span>
-                        </div>
-                        {rest.map((entry, idx) => {
-                          const rank = idx + 4;
-                          return (
-                            <LeaderboardRow
-                              key={entry.user_id}
-                              entry={entry}
-                              rank={idx + 4}
-                              isCurrentUser={entry.user_id === user?.id}
-                              showBottomBorder={rank % 10 === 0}
-                            />
-                          );
-                        })}
-                      </div>
+              {rest.length > 0 && (
+                <div className="rounded-sm overflow-hidden bg-surface-2">
+                  <div className="md:grid md:grid-cols-[56px_1fr_90px_90px_90px] lg:grid-cols-[72px_1fr_150px_150px_150px] gap-x-px gap-y-0 bg-foreground-dim rounded-md">
+                    <div className="hidden md:grid md:grid-cols-subgrid md:col-span-5">
+                      <span className="text-sm text-foreground-dim px-4 py-3 bg-surface-2">
+                        Rank
+                      </span>
+                      <span className="text-sm text-foreground px-4 py-3 bg-surface-2">
+                        Predictor
+                      </span>
+                      <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
+                        Accuracy
+                      </span>
+                      <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
+                        Average
+                      </span>
+                      <span className="text-sm text-foreground px-4 py-3 bg-surface-2 text-right font-medium">
+                        Points
+                      </span>
                     </div>
-                  )}
+                    {rest.map((entry, idx) => {
+                      const rank = idx + 4;
+                      return (
+                        <LeaderboardRow
+                          key={entry.user_id}
+                          entry={entry}
+                          rank={rank}
+                          isCurrentUser={entry.user_id === user?.id}
+                          showBottomBorder={rank % 10 === 0}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="text-center">
                 <Label>
