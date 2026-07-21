@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/typography";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useProfileStats } from "@/features/profile/hooks/useProfile";
 import { cn } from "@/lib/utils";
-import { Trophy } from "lucide-react";
+import { Medal, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLeaderboard, type LeaderboardEntry } from "./hooks/useLeaderboard";
 import LeaderboardRow from "./LeaderboardRow";
@@ -52,10 +52,17 @@ function PodiumCard({
       )}
 
       <div className="relative flex flex-col items-center gap-2">
-        <Trophy
-          className={cn(iconSize, "text-foreground-muted")}
-          aria-hidden="true"
-        />
+        {rank === 1 ? (
+          <Trophy
+            className={cn(iconSize, "text-foreground-muted")}
+            aria-hidden="true"
+          />
+        ) : (
+          <Medal
+            className={cn(iconSize, "text-foreground-muted")}
+            aria-hidden="true"
+          />
+        )}
         <div className="font-medium">{entry.username}</div>
         <div className="flex items-baseline gap-2">
           <span
