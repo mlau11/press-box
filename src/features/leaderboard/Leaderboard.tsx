@@ -35,7 +35,7 @@ function PodiumCard({
         sizeClasses,
         "flex flex-col items-center text-center",
         rank === 1 ? "md:scale-105 md:-translate-y-2" : "",
-        isCurrentUser ? "border-2 border-foreground" : "border-border",
+        isCurrentUser ? "border-2 border-foreground-muted" : "border-border",
       )}
     >
       <span
