@@ -30,12 +30,16 @@ export const CL_STAGES: WCStage[] = [
 ];
 
 export const LEAGUES = [
-  { code: "WC", label: "World Cup" },
   { code: "PL", label: "Premier League" },
-  { code: "CL", label: "Champions League" },
+  { code: "PD", label: "La Liga" },
   { code: "BL1", label: "Bundesliga" },
   { code: "SA", label: "Serie A" },
   { code: "FL1", label: "Ligue 1" },
+  { code: "CL", label: "Champions League" },
+  { code: "ELC", label: "Championship" },
+  { code: "DED", label: "Eredivisie" },
+  { code: "PPL", label: "Primeira Liga" },
+  { code: "BSA", label: "Campeonato Brasileiro Serie A" },
 ];
 
 export const leagueLabel: Record<string, string> = Object.fromEntries(
