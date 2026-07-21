@@ -95,7 +95,7 @@ export default function Leaderboard() {
     if (scoredPredictions === 0) {
       return (
         <div className="text-center py-6 mb-4 rounded-lg border border-dashed border-border">
-          <Label className="block mb-1">YOU'RE IN</Label>
+          <Label className="block mb-1">You're In</Label>
           <p className="text-sm text-foreground-muted">
             Your predictions will count toward your score once those matches
             finish.
@@ -180,41 +180,45 @@ export default function Leaderboard() {
                 )}
               </div>
 
-              {rest.length > 0 && (
-                <div className="rounded-sm overflow-hidden bg-surface-2">
-                  <div className="grid grid-cols-[72px_1fr_150px_150px_150px] gap-x-px gap-y-0 bg-border-stronger">
-                    <div className="grid grid-cols-subgrid col-span-5 border-b">
-                      <span className="text-sm text-foreground-dim px-4 py-3 bg-surface-2">
-                        Rank
-                      </span>
-                      <span className="text-sm text-foreground px-4 py-3 bg-surface-2">
-                        Predictor
-                      </span>
-                      <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
-                        Accuracy
-                      </span>
-                      <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
-                        Average
-                      </span>
-                      <span className="text-sm text-foreground px-4 py-3 bg-surface-2 text-right font-medium">
-                        Points
-                      </span>
+              <div className="overflow-x-auto -mx-6 px-6 md:mx-0 md:px-0">
+                <div className="min-w-[840px] rounded-sm overflow-hidden bg-surface-1">
+                  {rest.length > 0 && (
+                    <div className="rounded-sm overflow-hidden bg-surface-2">
+                      <div className="grid grid-cols-[72px_1fr_150px_150px_150px] gap-x-px gap-y-0 bg-foreground-dim rounded-md gap-1">
+                        <div className="grid grid-cols-subgrid col-span-5">
+                          <span className="text-sm text-foreground-dim px-4 py-3 bg-surface-2">
+                            Rank
+                          </span>
+                          <span className="text-sm text-foreground px-4 py-3 bg-surface-2">
+                            Predictor
+                          </span>
+                          <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
+                            Accuracy
+                          </span>
+                          <span className="text-sm text-foreground px-4 py-3 bg-surface-1 text-right">
+                            Average
+                          </span>
+                          <span className="text-sm text-foreground px-4 py-3 bg-surface-2 text-right font-medium">
+                            Points
+                          </span>
+                        </div>
+                        {rest.map((entry, idx) => {
+                          const rank = idx + 4;
+                          return (
+                            <LeaderboardRow
+                              key={entry.user_id}
+                              entry={entry}
+                              rank={idx + 4}
+                              isCurrentUser={entry.user_id === user?.id}
+                              showBottomBorder={rank % 10 === 0}
+                            />
+                          );
+                        })}
+                      </div>
                     </div>
-                    {rest.map((entry, idx) => {
-                      const rank = idx + 4;
-                      return (
-                        <LeaderboardRow
-                          key={entry.user_id}
-                          entry={entry}
-                          rank={idx + 4}
-                          isCurrentUser={entry.user_id === user?.id}
-                          showBottomBorder={rank % 10 === 0}
-                        />
-                      );
-                    })}
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               <div className="text-center">
                 <Label>
