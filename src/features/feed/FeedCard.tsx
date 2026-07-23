@@ -1,4 +1,3 @@
-// FeedCard.tsx
 import { Pill } from "@/components/ui/pill";
 import { Label } from "@/components/ui/typography";
 import { leagueLabel } from "@/constants";

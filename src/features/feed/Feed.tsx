@@ -1,4 +1,3 @@
-// Feed.tsx
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/typography";
 import { useQueryClient } from "@tanstack/react-query";
