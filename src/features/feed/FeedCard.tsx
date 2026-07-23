@@ -1,3 +1,4 @@
+// FeedCard.tsx
 import { Pill } from "@/components/ui/pill";
 import { Label } from "@/components/ui/typography";
 import { leagueLabel } from "@/constants";
@@ -24,79 +25,94 @@ const pointsLabel: Record<string, string> = {
 };
 
 export default function FeedCard({ item }: { item: FeedItem }) {
-  const initial = item.username?.[0]?.toUpperCase() ?? "?";
+  const hasOutcome = item.is_scored && item.outcome != null;
 
   return (
-    <div className="border-t-1 border-t-border first:border-t-0 last:border-b-1 overflow-hidden">
-      <div className="flex items-center justify-between gap-3 px-4 pt-3.5 pb-3 border-b border-border">
+    <div className="bg-surface-1 rounded-sm overflow-hidden">
+      {/* header */}
+      <div className="flex items-center justify-between gap-3 px-4 pt-4 pb-3">
         <Link
           to={`/profile/${item.username}`}
-          className="flex items-center gap-2.5 hover:opacity-80 transition-opacity min-w-0"
+          className="flex flex-col min-w-0 hover:opacity-80 transition-opacity"
         >
-          <span className="flex-shrink-0 grid place-items-center w-9 h-9 rounded-full bg-surface-1 border border-border  text-sm leading-none text-foreground">
-            {initial}
+          <span className="text-sm font-medium text-foreground truncate">
+            {item.username}
           </span>
-          <div className="flex flex-col gap-0.5 min-w-0">
-            <span className="text-[20px] tracking-[0.04em] uppercase text-foreground leading-none">
-              {item.username}
-            </span>
-            <Label className="uppercase truncate">
-              {leagueLabel[item.league_code] ?? item.league_code} · MD&nbsp;
-              {item.matchday} · {formatDate(item.created_at)}
-            </Label>
-          </div>
+          <Label className="truncate">
+            {leagueLabel[item.league_code] ?? item.league_code} · MD{" "}
+            {item.matchday} · {formatDate(item.created_at)}
+          </Label>
         </Link>
+
         {item.is_scored ? (
-          <div className="flex justify-center items-center gap-2">
-            <Pill variant={outcomeVariant(item.outcome)} size="md">
-              {outcomeLabel[item.outcome ?? "wrong"] ?? "WRONG"}
-            </Pill>
-            <div className="flex justify-center items-baseline gap-1">
-              <Label className="uppercase truncate text-foreground text-[18px]">
-                {pointsLabel[item.outcome ?? "wrong"] ?? "0"}
-              </Label>
-              <Label className="uppercase truncate text-sm">Pts</Label>
+          hasOutcome ? (
+            <div className="flex items-center gap-2 shrink-0">
+              <Pill variant={outcomeVariant(item.outcome)} size="sm">
+                {outcomeLabel[item.outcome as string]}
+              </Pill>
+              <span className="text-sm font-medium text-foreground tabular-nums">
+                {pointsLabel[item.outcome as string]} pts
+              </span>
             </div>
-          </div>
+          ) : (
+            <Label className="shrink-0">Scoring…</Label>
+          )
         ) : (
-          <Label>PENDING</Label>
+          <Label className="shrink-0">Pending</Label>
         )}
       </div>
 
-      <div className="px-4 py-4">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+      {/* score section */}
+      <div className="px-4 py-4 border-t border-border">
+        <div className="grid grid-cols-[1fr_180px_1fr] items-center gap-3">
           <div className="flex flex-col items-center gap-1.5 text-center">
             <img
               src={item.home_crest}
               alt={item.home_short_name}
               className="w-9 h-9 object-contain"
             />
-            <Label className="uppercase">{item.home_short_name}</Label>
+            <Label>{item.home_short_name}</Label>
           </div>
 
-          <div className="flex flex-col items-center gap-1">
-            <Label>PREDICTED</Label>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[32px] leading-none tabular-nums">
-                {item.predicted_home}
-              </span>
-              <span className="text-[20px] text-foreground-dim leading-none">
-                –
-              </span>
-              <span className="text-[32px] leading-none tabular-nums">
-                {item.predicted_away}
-              </span>
-            </div>
-            {item.is_scored &&
-              item.home_score != null &&
-              item.away_score != null && (
-                <div className="flex flex-col items-center gap-0.5 mt-1">
-                  <Label>FINAL</Label>
-                  <span className="text-sm text-foreground-muted tabular-nums">
-                    {item.home_score} – {item.away_score}
+          <div className="flex flex-col items-center gap-1.5">
+            <div className="flex items-center justify-center gap-4">
+              <div className="flex flex-col items-center gap-0.5">
+                <Label className="text-[10px]">Predicted</Label>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xl leading-none tabular-nums text-foreground">
+                    {item.predicted_home}
+                  </span>
+                  <span className="text-xl text-foreground-dim leading-none mb-0.5">
+                    –
+                  </span>
+                  <span className="text-xl leading-none tabular-nums text-foreground">
+                    {item.predicted_away}
                   </span>
                 </div>
-              )}
+              </div>
+
+              {item.is_scored &&
+                item.home_score != null &&
+                item.away_score != null && (
+                  <>
+                    <div className="w-px h-10 bg-border" />
+                    <div className="flex flex-col items-center gap-0.5">
+                      <Label className="text-[10px]">Final</Label>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xl leading-none tabular-nums text-foreground-muted">
+                          {item.home_score}
+                        </span>
+                        <span className="text-xl text-foreground-dim leading-none mb-0.5">
+                          –
+                        </span>
+                        <span className="text-xl leading-none tabular-nums text-foreground-muted">
+                          {item.away_score}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                )}
+            </div>
           </div>
 
           <div className="flex flex-col items-center gap-1.5 text-center">
@@ -105,7 +121,7 @@ export default function FeedCard({ item }: { item: FeedItem }) {
               alt={item.away_short_name}
               className="w-9 h-9 object-contain"
             />
-            <Label className="uppercase">{item.away_short_name}</Label>
+            <Label>{item.away_short_name}</Label>
           </div>
         </div>
       </div>

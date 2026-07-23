@@ -1,3 +1,4 @@
+// Feed.tsx
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/typography";
 import { useQueryClient } from "@tanstack/react-query";
@@ -58,34 +59,32 @@ export default function Feed() {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-8">
-      <div className="relative">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex gap-1 border-b border-border flex-1">
+          {FILTERS.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setFilter(key)}
+              className={[
+                "px-3.5 py-2.5 text-sm tracking-[0.06em] uppercase transition-colors",
+                "border-b-2 -mb-px",
+                filter === key
+                  ? "text-foreground border-accent"
+                  : "text-foreground-muted border-transparent hover:text-foreground",
+              ].join(" ")}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
         <button
           onClick={handleRefresh}
           aria-label="Refresh feed"
-          className="absolute top-12 right-0 w-9 h-9 grid place-items-center hover:rounded-md 
-            hover:border hover:bg-surface-5 text-foreground-muted hover:text-foreground 
-            hover:border-border-strong transition-colors"
+          className="w-9 h-9 grid place-items-center rounded-md hover:bg-surface-5 text-foreground-muted hover:text-foreground border border-transparent hover:border-border-strong transition-colors"
         >
           <RefreshCw className="w-4 h-4" />
         </button>
-      </div>
-
-      <div className="flex gap-1 border-b border-border -mt-2">
-        {FILTERS.map(({ key, label }) => (
-          <button
-            key={key}
-            onClick={() => setFilter(key)}
-            className={[
-              "px-3.5 py-2.5 text-sm tracking-[0.06em] uppercase transition-colors",
-              "border-b-2 -mb-px",
-              filter === key
-                ? "text-foreground border-accent"
-                : "text-foreground-muted border-transparent hover:text-foreground",
-            ].join(" ")}
-          >
-            {label}
-          </button>
-        ))}
       </div>
 
       {isLoading ? (
@@ -108,7 +107,7 @@ export default function Feed() {
           <Label>No {filter} predictions to show</Label>
         </p>
       ) : (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-4">
           {filteredItems.map((item, index) => {
             const isLast = index === filteredItems.length - 1;
             return (
