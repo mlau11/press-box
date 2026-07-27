@@ -6,7 +6,7 @@ export default function LeaderboardSkeleton() {
           <div
             key={rank}
             className={[
-              "relative bg-surface-3 border border-border rounded-lg overflow-hidden",
+              "relative bg-surface-4 border border-border rounded-lg overflow-hidden",
               "flex flex-col items-center gap-3 text-center",
               rank === 1 ? "py-8 px-6" : "py-6 px-6",
             ].join(" ")}
@@ -28,7 +28,7 @@ export default function LeaderboardSkeleton() {
           <div
             key={rank}
             className={[
-              "relative bg-surface-3 border border-border rounded-lg overflow-hidden",
+              "relative bg-surface-4 border border-border rounded-lg overflow-hidden",
               "flex flex-col items-center gap-3 text-center",
               rank === 1
                 ? "py-8 px-6 md:scale-105 md:-translate-y-2"

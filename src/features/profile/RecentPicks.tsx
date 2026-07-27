@@ -44,7 +44,7 @@ export default function RecentPicks({ picks }: { picks: RecentPick[] }) {
 
   return (
     <div className="rounded-sm px-[18px] py-4">
-      <div className="flex justify-between items-center pb-[10px]">
+      <div className="flex justify-between items-center pb-2xs">
         <span className="text-sm font-medium text-foreground">
           Recent picks
         </span>

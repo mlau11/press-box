@@ -12,8 +12,8 @@ const variantClasses: Record<PillVariant, string> = {
 };
 
 const sizeClasses: Record<PillSize, string> = {
-  sm: "px-2 py-0.5 text-[10px] tracking-[0.02em]",
-  md: "px-3 py-1 text-[12px] tracking-[0.02em]",
+  sm: "px-2 py-0.5 text-2xs tracking-[0.02em]",
+  md: "px-3 py-1 text-xs tracking-[0.02em]",
 };
 
 export function Pill({

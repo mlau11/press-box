@@ -76,7 +76,7 @@ export default function FeedCard({ item }: { item: FeedItem }) {
           <div className="flex flex-col items-center gap-1.5">
             <div className="flex items-center justify-center gap-4">
               <div className="flex flex-col items-center gap-0.5">
-                <Label className="text-[10px]">Predicted</Label>
+                <Label className="text-2xs">Predicted</Label>
                 <div className="flex items-center gap-1.5">
                   <span className="text-xl leading-none tabular-nums text-foreground">
                     {item.predicted_home}
@@ -96,7 +96,7 @@ export default function FeedCard({ item }: { item: FeedItem }) {
                   <>
                     <div className="w-px h-10 bg-border" />
                     <div className="flex flex-col items-center gap-0.5">
-                      <Label className="text-[10px]">Final</Label>
+                      <Label className="text-2xs">Final</Label>
                       <div className="flex items-center gap-1.5">
                         <span className="text-xl leading-none tabular-nums text-foreground-muted">
                           {item.home_score}
