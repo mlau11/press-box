@@ -123,7 +123,7 @@ export default function Navbar() {
               onClick={openAuthModal}
               className="hidden md:flex"
             >
-              Sign in
+              Sign up
             </Button>
           )}
 

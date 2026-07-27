@@ -21,13 +21,9 @@ export const useAuth = () => {
       },
     });
 
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-
+    if (error) setError(error.message);
     setLoading(false);
+    return !error;
   };
 
   const signInWithEmail = async (email: string, password: string) => {
@@ -41,6 +37,7 @@ export const useAuth = () => {
 
     if (error) setError(error.message);
     setLoading(false);
+    return !error;
   };
 
   const signInWithGoogle = async () => {
@@ -56,6 +53,7 @@ export const useAuth = () => {
 
     if (error) setError(error.message);
     setLoading(false);
+    return !error;
   };
 
   const signOut = async () => {

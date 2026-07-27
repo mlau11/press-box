@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 type AuthMode = "signin" | "signup" | "forgot";
 
 const titles: Record<AuthMode, string> = {
-  signin: "Welcome Back.",
-  signup: "Join the Box.",
-  forgot: "Reset Password.",
+  signin: "Welcome back.",
+  signup: "Get your press pass.",
+  forgot: "Reset password.",
 };
 
 function GoogleMono() {
@@ -56,7 +56,7 @@ export default function AuthModal() {
     error,
   } = useAuth();
 
-  const [mode, setMode] = useState<AuthMode>("signin");
+  const [mode, setMode] = useState<AuthMode>("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -66,7 +66,7 @@ export default function AuthModal() {
     setEmail("");
     setPassword("");
     setUsername("");
-    setMode("signin");
+    setMode("signup");
     setResetSent(false);
   };
 
@@ -79,20 +79,19 @@ export default function AuthModal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (mode === "signup") {
-      await signUpWithEmail(email, password, username);
-    } else {
-      await signInWithEmail(email, password);
-    }
-    if (!error) {
+    const success =
+      mode === "signup"
+        ? await signUpWithEmail(email, password, username)
+        : await signInWithEmail(email, password);
+    if (success) {
       closeAuthModal();
       resetForm();
     }
   };
 
   const handleGoogle = async () => {
-    await signInWithGoogle();
-    closeAuthModal();
+    const success = await signInWithGoogle();
+    if (success) closeAuthModal();
   };
 
   const inputFocus =
@@ -100,25 +99,23 @@ export default function AuthModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-[420px] p-0 overflow-hidden">
-        <div className="border-t-4 border-primary" />
-        <div className="px-7 pt-6 pb-7 flex flex-col gap-5">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="grid place-items-center w-6 h-6 rounded-[3px] bg-primary text-primary-foreground text-sm leading-none">
-                PB
-              </span>
-              <Label>Press Box</Label>
+      <DialogContent className="max-w-[420px] p-0 overflow-hidden bg-surface-1">
+        <div className="px-7 pt-7 pb-7 flex flex-col gap-5">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-display">
+                Press <span className="text-primary">Box</span>
+              </Label>
             </div>
-            <h2 className="text-[42px] leading-none tracking-[0.02em]">
+            <h2 className="text-[36px] leading-none tracking-[0.02em]">
               {titles[mode]}
             </h2>
           </div>
 
           {error && (
-            <div className="flex gap-2.5 items-start py-2.5 border-t border-b border-destructive">
-              <span className="text-[10px] tracking-[0.16em] uppercase text-destructive pt-px flex-shrink-0">
-                Err
+            <div className="flex gap-2.5 items-start bg-destructive/10 rounded-md px-3.5 py-3">
+              <span className="text-[10px] tracking-[0.1em] text-destructive pt-px flex-shrink-0">
+                Error
               </span>
               <p className="m-0 text-sm leading-[1.4] text-foreground">
                 {error}
@@ -132,12 +129,12 @@ export default function AuthModal() {
                 <div className="w-7 h-7 rounded-full grid place-items-center bg-accent/20 border border-accent/50 text-accent mb-1">
                   <Checkmark />
                 </div>
-                <h3 className="text-[22px] leading-none tracking-[0.04em] text-foreground m-0">
+                <h3 className="text-[22px] leading-none tracking-[0.02em] text-foreground m-0">
                   Check your inbox.
                 </h3>
-                <p className="italic text-sm leading-[1.45] text-fg-muted m-0">
+                <p className="text-sm leading-[1.45] text-foreground-muted m-0">
                   We've sent a reset link to{" "}
-                  <span className="not-italic text-[12px] text-foreground bg-surface-1 px-1.5 py-px rounded-[3px]">
+                  <span className="text-[12px] text-foreground bg-surface-3 px-1.5 py-px rounded-[3px]">
                     {email}
                   </span>
                   . It should arrive within a minute.
@@ -148,9 +145,9 @@ export default function AuthModal() {
                     setMode("signin");
                     setResetSent(false);
                   }}
-                  className="self-start mt-3 text-xs tracking-[0.06em] uppercase text-fg-muted hover:text-foreground border-b border-transparent hover:border-border-strong transition-colors pb-px"
+                  className="self-start mt-3 text-xs text-foreground-muted hover:text-foreground transition-colors"
                 >
-                  ← Back to sign in
+                  Back to sign in
                 </button>
               </div>
             ) : (
@@ -162,11 +159,11 @@ export default function AuthModal() {
                 }}
                 className="flex flex-col gap-4"
               >
-                <p className="italic text-sm leading-[1.45] text-fg-muted m-0">
+                <p className="text-sm leading-[1.45] text-foreground-muted m-0">
                   Enter your email and we'll send a reset link.
                 </p>
                 <div className="flex flex-col gap-1.5">
-                  <Label className="uppercase">Email</Label>
+                  <Label>Email</Label>
                   <Input
                     type="email"
                     value={email}
@@ -179,16 +176,16 @@ export default function AuthModal() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 text-sm tracking-[0.06em] uppercase"
+                  className="w-full py-3 text-sm"
                 >
                   {loading ? "Sending…" : "Send reset link"}
                 </Button>
                 <button
                   type="button"
                   onClick={() => setMode("signin")}
-                  className="self-center  text-xs tracking-[0.06em] uppercase text-fg-muted hover:text-foreground border-b border-transparent hover:border-border-strong transition-colors pb-px"
+                  className="self-center text-xs text-foreground-muted hover:text-foreground transition-colors"
                 >
-                  ← Back to sign in
+                  Back to sign in
                 </button>
               </form>
             )
@@ -196,7 +193,7 @@ export default function AuthModal() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {mode === "signup" && (
                 <div className="flex flex-col gap-1.5">
-                  <Label className="uppercase">Username</Label>
+                  <Label>Username</Label>
                   <Input
                     type="text"
                     value={username}
@@ -208,7 +205,7 @@ export default function AuthModal() {
                 </div>
               )}
               <div className="flex flex-col gap-1.5">
-                <Label className="uppercase">Email</Label>
+                <Label>Email</Label>
                 <Input
                   type="email"
                   value={email}
@@ -220,15 +217,12 @@ export default function AuthModal() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <Label className="uppercase">Password</Label>
+                  <Label>Password</Label>
                   {mode === "signin" && (
                     <button
                       type="button"
                       onClick={() => setMode("forgot")}
-                      className="text-xs text-fg-muted hover:text-accent transition-colors pb-px"
-                      style={{
-                        borderBottom: "1px dotted var(--border-strong)",
-                      }}
+                      className="text-xs text-foreground-muted hover:text-accent transition-colors"
                     >
                       Forgot password?
                     </button>
@@ -244,17 +238,17 @@ export default function AuthModal() {
                 />
               </div>
 
-              <button
+              <Button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-md bg-primary py-3 text-sm tracking-[0.06em] uppercase text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full py-3 text-sm"
               >
                 {loading
                   ? "Loading…"
                   : mode === "signin"
                     ? "Sign in"
                     : "Create account"}
-              </button>
+              </Button>
             </form>
           )}
 
@@ -270,7 +264,7 @@ export default function AuthModal() {
                 type="button"
                 disabled={loading}
                 onClick={handleGoogle}
-                className="w-full flex items-center justify-center gap-2.5 rounded-md border border-border py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 hover:border-border-strong disabled:opacity-50 transition-colors"
+                className="w-full flex items-center justify-center gap-2.5 rounded-md bg-surface-3 py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 disabled:opacity-50 transition-colors"
               >
                 <GoogleMono />
                 Continue with Google
@@ -284,7 +278,7 @@ export default function AuthModal() {
               <button
                 type="button"
                 onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-                className="text-accent border-b border-accent/40 hover:border-accent pb-px transition-colors"
+                className="text-accent hover:opacity-80 transition-opacity"
               >
                 {mode === "signin" ? "Sign up" : "Sign in"}
               </button>
