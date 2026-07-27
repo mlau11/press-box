@@ -1,4 +1,3 @@
-// Profile.tsx
 import { StatCell } from "@/components/ui/stat-cell";
 import { Label } from "@/components/ui/typography";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
