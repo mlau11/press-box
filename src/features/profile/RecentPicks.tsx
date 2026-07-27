@@ -4,7 +4,7 @@ import type { RecentPick } from "./hooks/useProfile";
 
 const outcomeVariant = (points: number) => {
   if (points === 3) return "success";
-  if (points === 1) return "neutral";
+  if (points === 1) return "success";
   return "destructive";
 };
 
@@ -14,13 +14,27 @@ const outcomeLabel = (points: number) => {
   return "0";
 };
 
-function ScoreCol({ score, label }: { score: string; label: string }) {
+function ScoreCol({
+  home,
+  away,
+  label,
+}: {
+  home: number;
+  away: number;
+  label: string;
+}) {
   return (
-    <div className="flex flex-col items-center gap-0.5 min-w-[52px]">
-      <Label className="text-[12px] leading-none">{label}</Label>
-      <span className="text-sm tracking-[0.02em] tabular-nums text-foreground leading-none">
-        {score}
-      </span>
+    <div className="flex flex-col items-center gap-0.5">
+      <Label className="leading-none pb-1">{label}</Label>
+      <div className="flex items-center gap-1">
+        <span className="text-sm tabular-nums text-foreground leading-none">
+          {home}
+        </span>
+        <span className="text-sm text-foreground-dim leading-none">-</span>
+        <span className="text-sm tabular-nums text-foreground leading-none">
+          {away}
+        </span>
+      </div>
     </div>
   );
 }
@@ -29,12 +43,12 @@ export default function RecentPicks({ picks }: { picks: RecentPick[] }) {
   if (picks.length === 0) return null;
 
   return (
-    <div className="px-[18px] py-4">
-      <div className="flex justify-between items-center pb-[10px] border-b border-dashed border-border">
+    <div className="rounded-sm px-[18px] py-4">
+      <div className="flex justify-between items-center pb-[10px]">
         <span className="text-sm font-medium text-foreground">
           Recent picks
         </span>
-        <Label>{picks.length} SCORED</Label>
+        <Label>{picks.length} Scored</Label>
       </div>
 
       <div className="flex flex-col">
@@ -44,11 +58,8 @@ export default function RecentPicks({ picks }: { picks: RecentPick[] }) {
           const hasScore = m.home_score != null && m.away_score != null;
 
           return (
-            <div
-              key={pick.id}
-              className="py-[10px] border-b border-dashed border-border"
-            >
-              <div className="grid grid-cols-[1fr_auto_auto_1fr_46px] items-center gap-3">
+            <div key={pick.id} className="py-4">
+              <div className="grid grid-cols-[1fr_190px_1fr_46px] items-center gap-3">
                 <div className="flex items-center gap-2 min-w-0">
                   {m.home_crest && (
                     <img
@@ -62,22 +73,27 @@ export default function RecentPicks({ picks }: { picks: RecentPick[] }) {
                   </span>
                 </div>
 
-                <ScoreCol
-                  score={`${pick.predicted_home}–${pick.predicted_away}`}
-                  label="CALLED"
-                />
-
-                {hasScore ? (
+                <div className="flex items-center justify-center gap-3">
                   <ScoreCol
-                    score={`${m.home_score}–${m.away_score}`}
-                    label="FINAL"
+                    home={pick.predicted_home}
+                    away={pick.predicted_away}
+                    label="Predicted"
                   />
-                ) : (
-                  <div className="min-w-[52px]" />
-                )}
+
+                  {hasScore && (
+                    <>
+                      <div className="w-px h-7 bg-border" />
+                      <ScoreCol
+                        home={m.home_score as number}
+                        away={m.away_score as number}
+                        label="Final"
+                      />
+                    </>
+                  )}
+                </div>
 
                 <div className="flex items-center gap-2 justify-end min-w-0">
-                  <span className="text-sm font-medium text-foreground truncate">
+                  <span className="text-sm font-medium text-foreground">
                     {m.away_short_name}
                   </span>
                   {m.away_crest && (

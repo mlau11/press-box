@@ -1,3 +1,4 @@
+// Profile.tsx
 import { StatCell } from "@/components/ui/stat-cell";
 import { Label } from "@/components/ui/typography";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
@@ -17,19 +18,17 @@ export default function Profile() {
 
   const { data: profile, isLoading: profileLoading } = useProfile(username);
   const { data: stats, isLoading: statsLoading } = useProfileStats(profile?.id);
-  const { data: recentPicks } = useRecentPicks(profile?.id);
+  const { data: recentPicks, isLoading: recentPicksLoading } = useRecentPicks(
+    profile?.id,
+  );
 
   const isOwnProfile = user?.username === username;
-  const isLoading = profileLoading || statsLoading;
+  const isLoading = profileLoading || statsLoading || recentPicksLoading;
   const scoredPredictions = stats?.scored_predictions ?? 0;
   const totalPredictions = stats?.total_predictions ?? 0;
 
   if (isLoading) {
-    return (
-      <div className="max-w-3xl mx-auto px-6 py-8">
-        <ProfileSkeleton />
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (!profile) {
@@ -40,70 +39,70 @@ export default function Profile() {
     );
   }
 
-  const initial = profile.username?.[0]?.toUpperCase() ?? "?";
-
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8 flex flex-col gap-8">
-      <div className="border-t-2 border-foreground pt-6 flex items-end gap-6">
-        <span className="grid place-items-center w-20 h-20 rounded-full bg-surface-1 border border-border  text-[40px] leading-none text-foreground flex-shrink-0">
-          {initial}
-        </span>
-        <div className="flex flex-col gap-1 min-w-0">
-          <Label>PREDICTOR</Label>
-          <h1 className=" text-[52px] leading-none tracking-[0.02em] uppercase truncate">
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="bg-surface-1 rounded-xs overflow-hidden flex flex-col gap-2 p-8">
+        <div className="p-4 flex flex-col gap-1">
+          <Label>Predictor</Label>
+          <h1 className="text-[52px] leading-[1.3] tracking-[0.02em] truncate">
             {profile.username}
           </h1>
           <Label>Joined {formatJoinDate(profile.created_at)}</Label>
         </div>
-      </div>
 
-      {totalPredictions > 0 ? (
-        <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-4">
-            <StatCell
-              topLabel="PREDICTIONS"
-              value={totalPredictions}
-              bottomLabel="SUBMITTED"
-            />
-            <StatCell
-              topLabel="PREDICTIONS"
-              value={scoredPredictions}
-              bottomLabel="SCORED"
-            />
-            <StatCell
-              topLabel="TOTAL POINTS"
-              value={stats!.total_points}
-              bottomLabel="LAST 100 PICKS"
-            />
-            <StatCell
-              topLabel="AVG POINTS"
-              value={stats!.avg_points_per_prediction}
-              bottomLabel="PER PREDICTION"
-            />
+        {totalPredictions > 0 && stats ? (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-5 bg-surface-2">
+              <StatCell
+                topLabel="Predictions"
+                value={totalPredictions}
+                bottomLabel="Submitted"
+              />
+              <StatCell
+                topLabel="Predictions"
+                value={scoredPredictions}
+                bottomLabel="Scored"
+              />
+              <StatCell
+                topLabel="Total points"
+                value={stats.total_points}
+                bottomLabel="Last 100 picks"
+              />
+              <StatCell
+                topLabel="Avg points"
+                value={stats.avg_points_per_prediction}
+                bottomLabel="Per prediction"
+              />
+              <StatCell
+                topLabel="Accuracy"
+                value={`${stats.accuracy_pct}%`}
+                bottomLabel="Correct results"
+              />
+            </div>
+
+            {recentPicks && recentPicks.length > 0 && (
+              <RecentPicks picks={recentPicks} />
+            )}
+          </>
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-sm font-medium mb-1">No predictions yet</p>
+            <p className="text-sm text-foreground-muted mb-4">
+              {isOwnProfile
+                ? "Head to fixtures to make your first prediction."
+                : `${profile.username} hasn't made any predictions yet.`}
+            </p>
+            {isOwnProfile && (
+              <Link
+                to="/"
+                className="inline-block text-sm px-4 py-2 rounded-md bg-surface-3 hover:bg-surface-5 transition-colors"
+              >
+                Go to fixtures
+              </Link>
+            )}
           </div>
-
-          {recentPicks && recentPicks.length > 0 && (
-            <RecentPicks picks={recentPicks} />
-          )}
-        </div>
-      ) : (
-        <div className="text-center py-20 border border-dashed border-border rounded-lg">
-          <p className="text-sm font-medium mb-1">No predictions yet</p>
-          <p className="text-sm text-foreground-muted mb-4">
-            {isOwnProfile
-              ? "Head to fixtures to make your first prediction."
-              : `${profile.username} hasn't made any predictions yet.`}
-          </p>
-          {isOwnProfile && (
-            <Link
-              to="/"
-              className="inline-block  text-sm tracking-[0.06em] uppercase px-4 py-2 rounded-md border border-border hover:border-border-strong transition-colors"
-            >
-              Go to fixtures
-            </Link>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
