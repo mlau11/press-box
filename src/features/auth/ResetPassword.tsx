@@ -60,26 +60,21 @@ export default function ResetPassword() {
     "focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:ring-offset-0 focus:border-accent";
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-surface-4 px-6 pt-12 pb-16">
-      <div className="flex flex-col items-center gap-2 pb-7 mb-8 border-b border-border w-full max-w-[420px]">
-        <span className="text-[10px] tracking-[0.18em] uppercase text-fg-muted">
-          The matchday journal
+    <div className="min-h-screen flex flex-col items-center px-6 pt-12 pb-16">
+      <div className="flex flex-col items-center gap-1.5 pb-8 w-full max-w-[420px]">
+        <Label>The matchday journal</Label>
+        <span className="font-display text-[36px] leading-none tracking-[0.04em] uppercase text-foreground">
+          Press <span className="text-primary">Box</span>
         </span>
-        <span className="text-[40px] leading-none tracking-[0.08em] text-foreground">
-          PRESS BOX
-        </span>
-        <span className="text-[10px] tracking-[0.18em] uppercase text-fg-muted">
-          Account · Password Reset
-        </span>
+        <Label>Account · Password reset</Label>
       </div>
 
-      <div className="w-full max-w-[420px] overflow-hidden rounded-lg border border-border">
-        <div className="h-1 bg-primary" />
-        <div className="px-7 pt-6 pb-7 flex flex-col gap-5">
-          <div>
-            <Label className="uppercase block mb-2.5">Step 2 of 2</Label>
+      <div className="w-full max-w-[420px] overflow-hidden rounded-lg bg-surface-1">
+        <div className="px-7 pt-7 pb-7 flex flex-col gap-5">
+          <div className="flex flex-col gap-2.5">
+            <Label>Step 2 of 2</Label>
             <h2 className="text-[42px] leading-none tracking-[0.02em]">
-              New Password.
+              New password.
             </h2>
           </div>
 
@@ -88,19 +83,19 @@ export default function ResetPassword() {
               <div className="w-7 h-7 rounded-full grid place-items-center bg-accent/20 border border-accent/50 text-accent mb-1">
                 <Checkmark />
               </div>
-              <h3 className="text-[22px] leading-none tracking-[0.04em] text-foreground m-0">
+              <h3 className="text-[22px] leading-none tracking-[0.02em] text-foreground m-0">
                 Password updated.
               </h3>
-              <p className="italic text-sm leading-[1.45] text-fg-muted m-0">
+              <p className="text-sm leading-[1.45] text-foreground-muted m-0">
                 Taking you back to the fixtures…
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {error && (
-                <div className="flex gap-2.5 items-start py-2.5 border-t border-b border-destructive">
-                  <span className="text-[10px] tracking-[0.16em] uppercase text-destructive pt-px flex-shrink-0">
-                    Err
+                <div className="flex gap-2.5 items-start bg-destructive/10 rounded-md px-3.5 py-3">
+                  <span className="text-[10px] tracking-[0.1em] text-destructive pt-px flex-shrink-0">
+                    Error
                   </span>
                   <p className="m-0 text-sm leading-[1.4] text-foreground">
                     {error}
@@ -109,7 +104,7 @@ export default function ResetPassword() {
               )}
 
               <div className="flex flex-col gap-1.5">
-                <Label className="uppercase">New Password</Label>
+                <Label>New password</Label>
                 <Input
                   type="password"
                   value={password}
@@ -121,7 +116,7 @@ export default function ResetPassword() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label className="uppercase">Confirm Password</Label>
+                <Label>Confirm password</Label>
                 <Input
                   type="password"
                   value={confirmPassword}
@@ -135,7 +130,7 @@ export default function ResetPassword() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 text-sm tracking-[0.06em] uppercase"
+                className="w-full py-3 text-sm"
               >
                 {loading ? "Updating…" : "Update password"}
               </Button>
