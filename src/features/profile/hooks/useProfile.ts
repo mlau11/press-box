@@ -7,6 +7,7 @@ export interface ProfileStats {
   scored_predictions: number;
   total_predictions: number;
   avg_points_per_prediction: number;
+  accuracy_pct: number;
 }
 
 export interface RecentPick {
@@ -47,8 +48,9 @@ const fetchProfileStats = async (userId: string): Promise<ProfileStats> => {
     data?.[0] ?? {
       total_points: 0,
       scored_predictions: 0,
-      total_submissions: 0,
+      total_predictions: 0,
       avg_points_per_prediction: 0,
+      accuracy_pct: 0,
     }
   );
 };
@@ -88,7 +90,9 @@ const fetchRecentPicks = async (userId: string): Promise<RecentPick[]> => {
         home_short_name,
         away_short_name,
         home_crest,
-        away_crest
+        away_crest,
+        home_score,
+        away_score
       )
     `,
     )
