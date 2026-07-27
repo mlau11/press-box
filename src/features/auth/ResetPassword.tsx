@@ -94,7 +94,7 @@ export default function ResetPassword() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {error && (
                 <div className="flex gap-2.5 items-start bg-destructive/10 rounded-md px-3.5 py-3">
-                  <span className="text-[10px] tracking-[0.1em] text-destructive pt-px flex-shrink-0">
+                  <span className="text-2xs tracking-[0.1em] text-destructive pt-px flex-shrink-0">
                     Error
                   </span>
                   <p className="m-0 text-sm leading-[1.4] text-foreground">

@@ -94,7 +94,7 @@ export default function Profile() {
             {isOwnProfile && (
               <Link
                 to="/"
-                className="inline-block text-sm px-4 py-2 rounded-md bg-surface-3 hover:bg-surface-5 transition-colors"
+                className="inline-block text-sm px-4 py-2 rounded-md bg-surface-4 hover:bg-surface-5 transition-colors"
               >
                 Go to fixtures
               </Link>

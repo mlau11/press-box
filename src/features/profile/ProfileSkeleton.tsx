@@ -19,7 +19,7 @@ export default function ProfileSkeleton() {
         </div>
 
         <div className="rounded-sm px-[18px] py-4">
-          <div className="flex justify-between items-center pb-[10px]">
+          <div className="flex justify-between items-center pb-2xs">
             <div className="h-3.5 w-24 bg-muted rounded" />
             <div className="h-2.5 w-16 bg-muted rounded" />
           </div>

@@ -33,14 +33,14 @@ export default function Navbar() {
   const isActive = (path: string) => location.pathname === path;
 
   const navLinkClasses = (path: string) =>
-    `relative px-3.5 py-2 rounded-[4px] text-base tracking-[0.06em] transition-colors ${
+    `relative px-3.5 py-2 text-base tracking-[0.06em] transition-colors ${
       isActive(path)
         ? "text-foreground"
         : "text-foreground-muted hover:text-foreground"
     }`;
 
   const mobileLinkClasses = (path: string) =>
-    `px-3.5 py-2.5 rounded-[4px]  text-base tracking-[0.06em] transition-colors ${
+    `px-3.5 py-2.5 text-base tracking-[0.06em] transition-colors ${
       isActive(path)
         ? "text-foreground bg-surface-1"
         : "text-foreground-muted hover:text-foreground hover:bg-surface-1"
@@ -121,7 +121,7 @@ export default function Navbar() {
               variant="default"
               size="sm"
               onClick={openAuthModal}
-              className="hidden md:flex"
+              className="hidden md:flex rounded-xs"
             >
               Sign up
             </Button>
@@ -207,7 +207,7 @@ export default function Navbar() {
                         openAuthModal();
                       }}
                     >
-                      Sign in
+                      Sign up
                     </Button>
                   )}
                 </div>

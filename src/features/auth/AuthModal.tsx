@@ -28,23 +28,6 @@ function GoogleMono() {
   );
 }
 
-function Checkmark() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2 7.5l3 3 7-7" />
-    </svg>
-  );
-}
-
 export default function AuthModal() {
   const { isOpen, closeAuthModal } = useAuthModal();
   const {
@@ -114,7 +97,7 @@ export default function AuthModal() {
 
           {error && (
             <div className="flex gap-2.5 items-start bg-destructive/10 rounded-md px-3.5 py-3">
-              <span className="text-[10px] tracking-[0.1em] text-destructive pt-px flex-shrink-0">
+              <span className="text-2xs tracking-[0.1em] text-destructive pt-px flex-shrink-0">
                 Error
               </span>
               <p className="m-0 text-sm leading-[1.4] text-foreground">
@@ -126,15 +109,12 @@ export default function AuthModal() {
           {mode === "forgot" ? (
             resetSent ? (
               <div className="flex flex-col gap-2 py-1">
-                <div className="w-7 h-7 rounded-full grid place-items-center bg-accent/20 border border-accent/50 text-accent mb-1">
-                  <Checkmark />
-                </div>
                 <h3 className="text-[22px] leading-none tracking-[0.02em] text-foreground m-0">
                   Check your inbox.
                 </h3>
                 <p className="text-sm leading-[1.45] text-foreground-muted m-0">
                   We've sent a reset link to{" "}
-                  <span className="text-[12px] text-foreground bg-surface-3 px-1.5 py-px rounded-[3px]">
+                  <span className="text-xs text-foreground bg-surface-4 px-1.5 py-px rounded-xs">
                     {email}
                   </span>
                   . It should arrive within a minute.
@@ -145,7 +125,7 @@ export default function AuthModal() {
                     setMode("signin");
                     setResetSent(false);
                   }}
-                  className="self-start mt-3 text-xs text-foreground-muted hover:text-foreground transition-colors"
+                  className="w-full rounded-sm bg-surface-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 transition-colors"
                 >
                   Back to sign in
                 </button>
@@ -176,14 +156,14 @@ export default function AuthModal() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 text-sm"
+                  className="w-full py-3 text-sm rounded-sm"
                 >
                   {loading ? "Sending…" : "Send reset link"}
                 </Button>
                 <button
                   type="button"
                   onClick={() => setMode("signin")}
-                  className="self-center text-xs text-foreground-muted hover:text-foreground transition-colors"
+                  className="w-full rounded-sm bg-surface-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 transition-colors"
                 >
                   Back to sign in
                 </button>
@@ -241,7 +221,7 @@ export default function AuthModal() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 text-sm"
+                className="w-full py-3 text-sm rounded-sm"
               >
                 {loading
                   ? "Loading…"
@@ -264,7 +244,7 @@ export default function AuthModal() {
                 type="button"
                 disabled={loading}
                 onClick={handleGoogle}
-                className="w-full flex items-center justify-center gap-2.5 rounded-md bg-surface-3 py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 disabled:opacity-50 transition-colors"
+                className="w-full flex items-center justify-center gap-2.5 rounded-sm bg-surface-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 disabled:opacity-50 transition-colors"
               >
                 <GoogleMono />
                 Continue with Google
