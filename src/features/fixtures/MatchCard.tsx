@@ -67,7 +67,7 @@ export default function MatchCard({
             <img
               src={match.homeTeam.crest ?? ""}
               alt={match.homeTeam.shortName ?? ""}
-              className="w-5 h-5 object-cover flex-shrink-0 rounded-full"
+              className="w-5 h-5 object-contain flex-shrink-0"
             />
             <span className="text-sm text-foreground truncate">
               {match.homeTeam.shortName}
@@ -90,7 +90,7 @@ export default function MatchCard({
             <img
               src={match.awayTeam.crest ?? ""}
               alt={match.awayTeam.shortName ?? ""}
-              className="w-5 h-5 object-cover flex-shrink-0 rounded-full"
+              className="w-5 h-5 object-contain flex-shrink-0"
             />
             <span className="text-sm text-foreground truncate">
               {match.awayTeam.shortName}
