@@ -198,6 +198,7 @@ function LeagueFixtures({
             <Calendar
               mode="single"
               selected={selectedDateObj}
+              defaultMonth={selectedDateObj}
               onSelect={handleCalendarSelect}
               disabled={(date) => {
                 const dateStr = toDateString(date);
