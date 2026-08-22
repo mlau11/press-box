@@ -48,11 +48,7 @@ export const leagueLabel: Record<string, string> = Object.fromEntries(
 
 export const PAGE_SIZE = 50;
 
-export const BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-fixtures`;
-
-export const HEADERS = {
-  "x-internal-secret": import.meta.env.VITE_INTERNAL_SECRET,
-};
+export const BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/football-data-proxy`;
 
 export const STORAGE_KEY = "pressbox_onboarding_seen";
 
