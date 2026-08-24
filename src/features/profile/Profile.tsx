@@ -21,7 +21,8 @@ export default function Profile() {
     profile?.id,
   );
 
-  const isOwnProfile = user?.username === username;
+  const isOwnProfile =
+    !!user?.username && user.username.toLowerCase() === username?.toLowerCase();
   const isLoading = profileLoading || statsLoading || recentPicksLoading;
   const scoredPredictions = stats?.scored_predictions ?? 0;
   const totalPredictions = stats?.total_predictions ?? 0;

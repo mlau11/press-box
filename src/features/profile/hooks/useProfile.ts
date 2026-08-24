@@ -33,7 +33,7 @@ const fetchProfile = async (username: string): Promise<User> => {
   const { data, error } = await supabase
     .from("users")
     .select("*")
-    .eq("username", username)
+    .eq("username", username.toLowerCase())
     .single();
   if (error) throw error;
   return data;

@@ -8,12 +8,14 @@ import Leaderboard from "@/features/leaderboard/Leaderboard";
 import OnboardingModal from "@/features/onboarding/OnboardingModal";
 import Profile from "@/features/profile/Profile";
 import { Route, Routes } from "react-router-dom";
+import UsernameSetupModal from "@/features/auth/UsernameSetupModal";
 
 function App() {
   return (
     <ErrorBoundary>
       <AuthModal />
       <OnboardingModal />
+      <UsernameSetupModal />
 
       <Routes>
         <Route path="/reset-password" element={<ResetPassword />} />

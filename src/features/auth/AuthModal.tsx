@@ -1,18 +1,25 @@
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/typography";
-import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useEffect, useState, type SubmitEvent } from "react";
 import { useAuthModal } from "./context/AuthModalContext";
 import { useAuth } from "./hooks/useAuth";
-import { Button } from "@/components/ui/button";
+import { USERNAME_RULE, validateUsername } from "./utils/validateUsername";
 
 type AuthMode = "signin" | "signup" | "forgot";
+
+const DEFAULT_MODE: AuthMode = "signup";
 
 const titles: Record<AuthMode, string> = {
   signin: "Welcome back.",
   signup: "Get your press pass.",
   forgot: "Reset password.",
 };
+
+const secondaryButton =
+  "w-full rounded-sm bg-surface-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 transition-colors";
 
 function GoogleMono() {
   return (
@@ -39,18 +46,58 @@ export default function AuthModal() {
     error,
   } = useAuth();
 
-  const [mode, setMode] = useState<AuthMode>("signup");
+  const [mode, setMode] = useState<AuthMode>(DEFAULT_MODE);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [resetSent, setResetSent] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [available, setAvailable] = useState<boolean | null>(null);
+
+  const formatError =
+    mode !== "signup" || username.trim() === ""
+      ? null
+      : validateUsername(username);
+
+  useEffect(() => {
+    if (mode !== "signup") {
+      setAvailable(null);
+      setChecking(false);
+      return;
+    }
+
+    const value = username.trim().toLowerCase();
+    if (validateUsername(value) !== null) {
+      setAvailable(null);
+      setChecking(false);
+      return;
+    }
+
+    setChecking(true);
+    const timer = setTimeout(async () => {
+      const { data, error: lookupError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("username", value)
+        .maybeSingle();
+
+      if (!lookupError) setAvailable(!data);
+      setChecking(false);
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [username, mode]);
 
   const resetForm = () => {
     setEmail("");
     setPassword("");
     setUsername("");
-    setMode("signup");
+    setMode(DEFAULT_MODE);
     setResetSent(false);
+    setFormError(null);
+    setAvailable(null);
+    setChecking(false);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -60,11 +107,21 @@ export default function AuthModal() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFormError(null);
+
+    if (mode === "signup") {
+      const invalid = validateUsername(username);
+      if (invalid) {
+        setFormError(invalid);
+        return;
+      }
+    }
+
     const success =
       mode === "signup"
-        ? await signUpWithEmail(email, password, username)
+        ? await signUpWithEmail(email, password, username.trim().toLowerCase())
         : await signInWithEmail(email, password);
     if (success) {
       closeAuthModal();
@@ -79,6 +136,11 @@ export default function AuthModal() {
 
   const inputFocus =
     "focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:ring-offset-0 focus:border-accent";
+
+  const submitDisabled =
+    loading ||
+    (mode === "signup" &&
+      (checking || available === false || validateUsername(username) !== null));
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -95,13 +157,13 @@ export default function AuthModal() {
             </h2>
           </div>
 
-          {error && (
+          {(formError || error) && (
             <div className="flex gap-2.5 items-start bg-destructive/10 rounded-md px-3.5 py-3">
               <span className="text-2xs tracking-[0.1em] text-destructive pt-px flex-shrink-0">
                 Error
               </span>
               <p className="m-0 text-sm leading-[1.4] text-foreground">
-                {error}
+                {formError ?? error}
               </p>
             </div>
           )}
@@ -125,7 +187,7 @@ export default function AuthModal() {
                     setMode("signin");
                     setResetSent(false);
                   }}
-                  className="w-full rounded-sm bg-surface-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 transition-colors"
+                  className={secondaryButton}
                 >
                   Back to sign in
                 </button>
@@ -163,7 +225,7 @@ export default function AuthModal() {
                 <button
                   type="button"
                   onClick={() => setMode("signin")}
-                  className="w-full rounded-sm bg-surface-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface-5 transition-colors"
+                  className={secondaryButton}
                 >
                   Back to sign in
                 </button>
@@ -180,8 +242,20 @@ export default function AuthModal() {
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="e.g. goatpredictor99"
                     required
+                    autoComplete="off"
                     className={inputFocus}
                   />
+                  {formatError ? (
+                    <Label className="text-destructive">{formatError}</Label>
+                  ) : checking ? (
+                    <Label>Checking…</Label>
+                  ) : available === false ? (
+                    <Label className="text-destructive">Already taken</Label>
+                  ) : available === true ? (
+                    <Label className="text-success">Available</Label>
+                  ) : (
+                    <Label>{USERNAME_RULE}</Label>
+                  )}
                 </div>
               )}
               <div className="flex flex-col gap-1.5">
@@ -220,7 +294,7 @@ export default function AuthModal() {
 
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={submitDisabled}
                 className="w-full py-3 text-sm rounded-sm"
               >
                 {loading
@@ -257,7 +331,10 @@ export default function AuthModal() {
               {mode === "signin" ? "No account? " : "Already a member? "}
               <button
                 type="button"
-                onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+                onClick={() => {
+                  setMode(mode === "signin" ? "signup" : "signin");
+                  setFormError(null);
+                }}
                 className="text-accent hover:opacity-80 transition-opacity"
               >
                 {mode === "signin" ? "Sign up" : "Sign in"}
