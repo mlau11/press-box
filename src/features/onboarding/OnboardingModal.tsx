@@ -2,15 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/typography";
 import { STORAGE_KEY } from "@/constants";
+import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useEffect, useState } from "react";
 
 export default function OnboardingModal() {
+  const { profile, user } = useAuthContext();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const seen = localStorage.getItem(STORAGE_KEY);
-    if (!seen) setOpen(true);
-  }, []);
+    const blockedByUsernameGate = !!user && !profile?.username;
+    if (!seen && !blockedByUsernameGate) setOpen(true);
+  }, [user, profile?.username]);
 
   function dismiss() {
     localStorage.setItem(STORAGE_KEY, "true");
