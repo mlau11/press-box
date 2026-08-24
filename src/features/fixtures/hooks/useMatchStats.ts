@@ -1,4 +1,4 @@
-import { BASE_URL, HEADERS } from "@/constants";
+import { BASE_URL } from "@/constants";
 import { useQuery } from "@tanstack/react-query";
 
 export interface StandingEntry {
@@ -89,7 +89,7 @@ const fetchTeamForm = async (teamId: number): Promise<FormMatch[]> => {
     type: "form",
     teamId: teamId.toString(),
   });
-  const response = await fetch(`${BASE_URL}?${params}`, { headers: HEADERS });
+  const response = await fetch(`${BASE_URL}?${params}`);
   if (!response.ok) throw new Error("Failed to fetch team form");
   const data = await response.json();
   return data.matches ?? [];
@@ -97,7 +97,7 @@ const fetchTeamForm = async (teamId: number): Promise<FormMatch[]> => {
 
 const fetchStandings = async (leagueCode: string): Promise<StandingGroup[]> => {
   const params = new URLSearchParams({ type: "standings", league: leagueCode });
-  const response = await fetch(`${BASE_URL}?${params}`, { headers: HEADERS });
+  const response = await fetch(`${BASE_URL}?${params}`);
   if (!response.ok) throw new Error("Failed to fetch standings");
   const data: StandingsResponse = await response.json();
   return data.standings

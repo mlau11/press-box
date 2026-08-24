@@ -1,4 +1,10 @@
+import { Calendar } from "@/components/ui/calendar";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -6,25 +12,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Label } from "@/components/ui/typography";
 import { LEAGUES } from "@/constants";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useUserPredictions } from "@/features/predictions/hooks/usePredictions";
 import type { Match } from "@/types";
-import { sortMatches } from "@/utils/matches";
-import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import FixturesSkeleton from "./FixturesSkeleton";
 import MatchCard from "./MatchCard";
 import MatchPanel from "./MatchPanel";
 import { useFixtures } from "./hooks/useFixtures";
+import { sortMatches } from "./utils/matches";
 
 const toDateString = (date: Date): string => {
   const year = date.getFullYear();
@@ -198,6 +198,7 @@ function LeagueFixtures({
             <Calendar
               mode="single"
               selected={selectedDateObj}
+              defaultMonth={selectedDateObj}
               onSelect={handleCalendarSelect}
               disabled={(date) => {
                 const dateStr = toDateString(date);
