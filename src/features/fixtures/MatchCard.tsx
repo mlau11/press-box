@@ -1,7 +1,7 @@
 import { LiveDot, Pill } from "@/components/ui/pill";
 import { Label } from "@/components/ui/typography";
 import type { Match } from "@/types";
-import { formatKickoff, statusLabel } from "@/utils/matches";
+import { formatKickoff, statusLabel } from "./utils/matches";
 
 interface MatchCardProps {
   match: Match & {

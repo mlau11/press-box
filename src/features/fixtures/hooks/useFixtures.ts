@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import type { Match } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
@@ -12,8 +13,6 @@ export interface CompetitionResponse {
   };
 }
 
-const BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-fixtures`;
-
 const fetchCurrentMatchday = async (
   leagueCode: string,
 ): Promise<{ currentMatchday: number; endMatchday: number }> => {
@@ -21,11 +20,7 @@ const fetchCurrentMatchday = async (
     league: leagueCode,
     type: "competition",
   });
-  const response = await fetch(`${BASE_URL}?${params}`, {
-    headers: {
-      "x-internal-secret": import.meta.env.VITE_INTERNAL_SECRET,
-    },
-  });
+  const response = await fetch(`${BASE_URL}?${params}`);
   if (!response.ok) throw new Error("Failed to fetch competition info");
   const data: CompetitionResponse = await response.json();
   return {
@@ -50,11 +45,7 @@ const fetchFixtures = async (
   } else if (matchday) {
     params.set("matchday", matchday.toString());
   }
-  const response = await fetch(`${BASE_URL}?${params}`, {
-    headers: {
-      "x-internal-secret": import.meta.env.VITE_INTERNAL_SECRET,
-    },
-  });
+  const response = await fetch(`${BASE_URL}?${params}`);
   if (!response.ok) throw new Error("Failed to fetch fixtures");
   return response.json();
 };

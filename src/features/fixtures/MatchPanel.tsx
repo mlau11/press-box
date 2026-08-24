@@ -8,7 +8,6 @@ import { useAuthModal } from "@/features/auth/context/AuthModalContext";
 import { useSubmitPrediction } from "@/features/predictions/hooks/usePredictions";
 import { cn } from "@/lib/utils";
 import type { Match, Prediction } from "@/types/index";
-import { formatKickoff, getFormResult, statusLabel } from "@/utils/matches";
 import { useEffect, useRef, useState } from "react";
 import {
   useStandings,
@@ -18,6 +17,7 @@ import {
 } from "./hooks/useMatchStats";
 import MatchPanelSkeleton from "./MatchPanelSkeleton";
 import { ScoreInput } from "./ScoreInput";
+import { formatKickoff, getFormResult, statusLabel } from "./utils/matches";
 
 interface MatchPanelProps {
   match: Match | null;
@@ -153,9 +153,9 @@ export default function MatchPanel({
   existingPrediction,
   leagueCode,
 }: MatchPanelProps) {
-  const [homeScore, setHomeScore] = useState("");
-  const [awayScore, setAwayScore] = useState("");
-  const prevUserRef = useRef<string | null>(null);
+  const [homeScore, setHomeScore] = useState(0);
+  const [awayScore, setAwayScore] = useState(0);
+  const pendingSubmitRef = useRef(false);
 
   const { user } = useAuthContext();
   const { openAuthModal } = useAuthModal();
@@ -181,34 +181,31 @@ export default function MatchPanel({
     : null;
 
   useEffect(() => {
-    setHomeScore("");
-    setAwayScore("");
+    setHomeScore(0);
+    setAwayScore(0);
+    pendingSubmitRef.current = false;
   }, [match?.id]);
 
   useEffect(() => {
     if (existingPrediction) {
-      setHomeScore(existingPrediction.predicted_home.toString());
-      setAwayScore(existingPrediction.predicted_away.toString());
+      setHomeScore(existingPrediction.predicted_home);
+      setAwayScore(existingPrediction.predicted_away);
     }
-  }, [existingPrediction]);
+  }, [existingPrediction?.predicted_home, existingPrediction?.predicted_away]);
 
   useEffect(() => {
-    const currentUserId = user?.id ?? null;
-    const wasLoggedOut = prevUserRef.current === null;
-    const isNowLoggedIn = currentUserId !== null;
+    if (!user || !pendingSubmitRef.current) return;
+    pendingSubmitRef.current = false;
 
-    prevUserRef.current = currentUserId;
-
-    if (!wasLoggedOut || !isNowLoggedIn) return;
-    if (!match || !matchData || homeScore === "" || awayScore === "") return;
+    if (!match || !matchData) return;
 
     submitPrediction({
       userId: user!.id,
       matchId: match.id,
       leagueCode,
       matchday: match.matchday,
-      predictedHome: parseInt(homeScore),
-      predictedAway: parseInt(awayScore),
+      predictedHome: homeScore,
+      predictedAway: awayScore,
       matchData,
     });
   }, [user]);
@@ -235,16 +232,16 @@ export default function MatchPanel({
     : null;
 
   const bumpHome = (delta: number) => {
-    setHomeScore(String(Math.max(0, (parseInt(homeScore) || 0) + delta)));
+    setHomeScore((s) => Math.max(0, s + delta));
   };
 
   const bumpAway = (delta: number) => {
-    setAwayScore(String(Math.max(0, (parseInt(awayScore) || 0) + delta)));
+    setAwayScore((s) => Math.max(0, s + delta));
   };
 
   const handleSubmit = () => {
-    if (homeScore === "" || awayScore === "") return;
     if (!user) {
+      pendingSubmitRef.current = true;
       openAuthModal();
       return;
     }
@@ -254,8 +251,8 @@ export default function MatchPanel({
       matchId: match.id,
       leagueCode,
       matchday: match.matchday,
-      predictedHome: parseInt(homeScore),
-      predictedAway: parseInt(awayScore),
+      predictedHome: homeScore,
+      predictedAway: awayScore,
       matchData,
     });
   };
@@ -513,13 +510,13 @@ export default function MatchPanel({
             </span>
             {(
               [
-                ["2", "1"],
-                ["1", "1"],
-                ["1", "0"],
-                ["0", "0"],
-                ["0", "1"],
-                ["1", "2"],
-              ] as [string, string][]
+                [2, 1],
+                [1, 1],
+                [1, 0],
+                [0, 0],
+                [0, 1],
+                [1, 2],
+              ] as [number, number][]
             ).map(([h, a]) => (
               <button
                 key={`${h}-${a}`}
@@ -540,9 +537,7 @@ export default function MatchPanel({
 
           <Button
             onClick={handleSubmit}
-            disabled={
-              !isEditable || isPending || homeScore === "" || awayScore === ""
-            }
+            disabled={!isEditable || isPending}
             className="w-full py-3 rounded-sm text-sm active:translate-y-px active:brightness-90 transition-all cursor-pointer"
           >
             {!isEditable
@@ -551,13 +546,11 @@ export default function MatchPanel({
                 : "Match in progress"
               : isPending
                 ? "Submitting…"
-                : homeScore === "" || awayScore === ""
-                  ? "Enter a score to predict"
-                  : existingPrediction
-                    ? "Update prediction"
-                    : user
-                      ? "Submit prediction"
-                      : "Sign in to predict"}
+                : existingPrediction
+                  ? "Update prediction"
+                  : user
+                    ? "Submit prediction"
+                    : "Sign in to predict"}
           </Button>
         </div>
 
