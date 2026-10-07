@@ -1,37 +1,7 @@
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  scoring_window: number;
-  created_at: string;
-}
+import type { Tables } from "@/types/supabase";
 
-export interface League {
-  id: string;
-  name: string;
-  country: string;
-  api_league_id: string;
-}
-
-export interface Prediction {
-  id: string;
-  user_id: string;
-  match_id: number;
-  league_code: string;
-  matchday: number;
-  predicted_home: number;
-  predicted_away: number;
-  outcome: string | null;
-  points_earned: number;
-  is_scored: boolean;
-  created_at: string;
-}
-
-export interface Follow {
-  follower_id: string;
-  following_id: string;
-  created_at: string;
-}
+export type Profile = Tables<"users">;
+export type Prediction = Tables<"predictions">;
 
 export interface Match {
   id: number;

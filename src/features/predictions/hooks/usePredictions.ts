@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import type { Prediction } from "@/types/index";
+import type { Prediction } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const submitPrediction = async ({
