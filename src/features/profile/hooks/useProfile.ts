@@ -16,7 +16,7 @@ type MatchRow = Tables<"matches">;
 
 export type RecentPick = Pick<
   PredictionRow,
-  "id" | "predicted_home" | "predicted_away" | "created_at"
+  "id" | "predicted_home" | "predicted_away"
 > & {
   // guaranteed non-null by the .eq("is_scored", true) filter
   points_earned: NonNullable<PredictionRow["points_earned"]>;
@@ -31,6 +31,7 @@ export type RecentPick = Pick<
     | "away_crest"
     | "home_score"
     | "away_score"
+    | "kickoff_at"
   >;
 };
 
@@ -87,8 +88,7 @@ const fetchRecentPicks = async (userId: string): Promise<RecentPick[]> => {
       predicted_home,
       predicted_away,
       points_earned,
-      outcome,
-      created_at,
+      outcome, 
       matches (
         home_team,
         away_team,
@@ -97,13 +97,14 @@ const fetchRecentPicks = async (userId: string): Promise<RecentPick[]> => {
         home_crest,
         away_crest,
         home_score,
-        away_score
+        away_score,
+        kickoff_at
       )
     `,
     )
     .eq("user_id", userId)
     .eq("is_scored", true)
-    .order("created_at", { ascending: false })
+    .order("kickoff_at", { referencedTable: "matches", ascending: false })
     .limit(10);
 
   if (error) throw error;
