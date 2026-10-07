@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
-import type { User } from "@/types/index";
+import type { Profile } from "@/types";
+import type { Tables } from "@/types/supabase";
 import { useQuery } from "@tanstack/react-query";
 
 export interface ProfileStats {
@@ -10,26 +11,30 @@ export interface ProfileStats {
   accuracy_pct: number;
 }
 
-export interface RecentPick {
-  id: string;
-  predicted_home: number;
-  predicted_away: number;
-  points_earned: number;
-  outcome: string | null;
-  created_at: string;
-  matches: {
-    home_team: string;
-    away_team: string;
-    home_short_name: string;
-    away_short_name: string;
-    home_crest: string | null;
-    away_crest: string | null;
-    home_score: number | null;
-    away_score: number | null;
-  } | null;
-}
+type PredictionRow = Tables<"predictions">;
+type MatchRow = Tables<"matches">;
 
-const fetchProfile = async (username: string): Promise<User> => {
+export type RecentPick = Pick<
+  PredictionRow,
+  "id" | "predicted_home" | "predicted_away" | "created_at"
+> & {
+  // guaranteed non-null by the .eq("is_scored", true) filter
+  points_earned: NonNullable<PredictionRow["points_earned"]>;
+  outcome: NonNullable<PredictionRow["outcome"]>;
+  matches: Pick<
+    MatchRow,
+    | "home_team"
+    | "away_team"
+    | "home_short_name"
+    | "away_short_name"
+    | "home_crest"
+    | "away_crest"
+    | "home_score"
+    | "away_score"
+  >;
+};
+
+const fetchProfile = async (username: string): Promise<Profile> => {
   const { data, error } = await supabase
     .from("users")
     .select("*")
@@ -102,7 +107,10 @@ const fetchRecentPicks = async (userId: string): Promise<RecentPick[]> => {
     .limit(10);
 
   if (error) throw error;
-  return (data ?? []) as unknown as RecentPick[];
+  // Scored rows always have points_earned and outcome (enforced by the
+  // scored_rows_complete check constraint), which the .eq("is_scored", true)
+  // filter above guarantees — but the query builder can't infer that.
+  return (data ?? []) as RecentPick[];
 };
 
 export const useRecentPicks = (userId: string | undefined) => {
