@@ -1,6 +1,6 @@
 import type { Tables } from "@/types/supabase";
 
-export type Profile = Tables<"users">;
+export type Profile = Omit<Tables<"users">, "email">;
 export type Prediction = Tables<"predictions">;
 
 export interface Match {

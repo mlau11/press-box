@@ -38,7 +38,7 @@ export type RecentPick = Pick<
 const fetchProfile = async (username: string): Promise<Profile> => {
   const { data, error } = await supabase
     .from("users")
-    .select("*")
+    .select("id, username, created_at")
     .eq("username", username.toLowerCase())
     .single();
   if (error) throw error;

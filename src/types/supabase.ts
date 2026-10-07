@@ -152,21 +152,18 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          scoring_window: number | null
           username: string | null
         }
         Insert: {
           created_at?: string
           email: string
           id: string
-          scoring_window?: number | null
           username?: string | null
         }
         Update: {
           created_at?: string
           email?: string
           id?: string
-          scoring_window?: number | null
           username?: string | null
         }
         Relationships: []
@@ -222,22 +219,6 @@ export type Database = {
           total_points: number
           total_predictions: number
         }[]
-      }
-      get_user_by_username: {
-        Args: { p_username: string }
-        Returns: {
-          created_at: string
-          email: string
-          id: string
-          scoring_window: number | null
-          username: string | null
-        }[]
-        SetofOptions: {
-          from: "*"
-          to: "users"
-          isOneToOne: false
-          isSetofReturn: true
-        }
       }
     }
     Enums: {
