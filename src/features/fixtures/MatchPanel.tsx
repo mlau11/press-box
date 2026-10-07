@@ -318,7 +318,7 @@ export default function MatchPanel({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ===== Scoreboard ===== */}
+      {/* Scoreboard */}
       <div className="relative overflow-hidden rounded-xs p-4 bg-surface-1/50">
         <svg
           viewBox="8 8 1184 344"

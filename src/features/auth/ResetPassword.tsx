@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/typography";
 import { supabase } from "@/lib/supabase";
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Checkmark() {
@@ -30,7 +30,7 @@ export default function ResetPassword() {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setError("Passwords do not match");

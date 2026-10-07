@@ -15,7 +15,7 @@ export default function FixturesSkeleton() {
       <div className="flex flex-col gap-1">
         {[...Array(6)].map((_, i) => (
           <div key={i} className="px-5 py-3.5 rounded-sm">
-            {/* Top row — date + time */}
+            {/* Date + time */}
             <div className="flex items-center justify-between mb-2.5">
               <div className="h-2.5 w-20 bg-muted rounded" />
               <div className="h-2.5 w-10 bg-muted rounded" />

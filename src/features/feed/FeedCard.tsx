@@ -28,7 +28,7 @@ export default function FeedCard({ item }: { item: FeedItem }) {
 
   return (
     <div className="bg-surface-1 rounded-sm overflow-hidden">
-      {/* header */}
+      {/* Header */}
       <div className="flex items-center justify-between gap-3 px-4 pt-4 pb-3">
         <Link
           to={`/profile/${item.username}`}
@@ -61,7 +61,7 @@ export default function FeedCard({ item }: { item: FeedItem }) {
         )}
       </div>
 
-      {/* score section */}
+      {/* Score section */}
       <div className="px-4 py-4 border-t border-border">
         <div className="grid grid-cols-[1fr_180px_1fr] items-center gap-3">
           <div className="flex flex-col items-center gap-1.5 text-center">

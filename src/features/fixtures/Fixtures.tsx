@@ -286,7 +286,7 @@ export default function Fixtures() {
         grid-cols-1 lg:grid-cols-[minmax(300px,35%)_1fr]
       "
     >
-      {/* Left column — fixture list */}
+      {/* Fixture list */}
       <div className="min-w-0 flex flex-col bg-surface-1 rounded-xs overflow-hidden pt-5">
         {/* League selector */}
         <div className="px-4 pb-3">
@@ -323,7 +323,7 @@ export default function Fixtures() {
         )}
       </div>
 
-      {/* Right column — match panel */}
+      {/* Match panel */}
       <div className="hidden lg:block min-w-0">
         <MatchPanel
           match={activeMatch}

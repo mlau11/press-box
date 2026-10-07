@@ -15,7 +15,7 @@ import { LogOut, Menu, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-function UserGlyph({ username }: { username?: string }) {
+function UserGlyph({ username }: { username?: string | null }) {
   const initial = username?.trim()?.[0]?.toUpperCase();
   if (!initial) return <User className="w-4 h-4" />;
   return (

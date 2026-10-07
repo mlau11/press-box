@@ -64,7 +64,7 @@ export default function RecentPicks({ picks }: { picks: RecentPick[] }) {
                   {m.home_crest && (
                     <img
                       src={m.home_crest}
-                      alt={m.home_short_name}
+                      alt={m.home_short_name || m.home_team}
                       className="w-5 h-5 object-contain shrink-0"
                     />
                   )}
@@ -99,7 +99,7 @@ export default function RecentPicks({ picks }: { picks: RecentPick[] }) {
                   {m.away_crest && (
                     <img
                       src={m.away_crest}
-                      alt={m.away_short_name}
+                      alt={m.away_short_name || m.away_team}
                       className="w-5 h-5 object-contain shrink-0"
                     />
                   )}

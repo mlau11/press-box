@@ -39,7 +39,7 @@ export default function MatchCard({
         .filter(Boolean)
         .join(" ")}
     >
-      {/* Top row — date + time/status */}
+      {/* Date + time/status */}
       <div className="flex items-center justify-between mb-2.5">
         <Label>{date}</Label>
         <div className="flex items-center gap-2">
