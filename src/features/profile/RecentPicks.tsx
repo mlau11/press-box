@@ -1,10 +1,6 @@
 import { Pill } from "@/components/ui/pill";
 import { Label } from "@/components/ui/typography";
-import {
-  formatPoints,
-  outcomeLabel,
-  outcomeVariant,
-} from "../predictions/utils/outcome";
+import { formatPoints, outcomeVariant } from "../predictions/utils/outcome";
 import type { RecentPick } from "./hooks/useProfile";
 
 function ScoreCol({
