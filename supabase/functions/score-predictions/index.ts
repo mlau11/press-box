@@ -25,29 +25,30 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// Scoring uses the 90 minute result; fullTime includes extra time and penalties.
+// Returns null if unavailable so the prediction is retried next run rather than
+// scored wrongly; scored rows are never revisited.
+const judgedScore = (
+  score: MatchResult["score"],
+): { home: number; away: number } | null => {
+  const wentBeyond90 =
+    score.duration === "EXTRA_TIME" || score.duration === "PENALTY_SHOOTOUT";
+  const source = wentBeyond90 ? score.regularTime : score.fullTime;
+  if (!source || source.home === null || source.away === null) return null;
+  return { home: source.home, away: source.away };
+};
+
 const calculatePoints = (
   predictedHome: number,
   predictedAway: number,
   actualHome: number,
   actualAway: number,
-  regularTimeHome: number | null,
-  regularTimeAway: number | null,
-  duration: string,
 ): { points: number; outcome: string } => {
-  const compareHome =
-    duration === "PENALTY_SHOOTOUT"
-      ? (regularTimeHome ?? actualHome)
-      : actualHome;
-  const compareAway =
-    duration === "PENALTY_SHOOTOUT"
-      ? (regularTimeAway ?? actualAway)
-      : actualAway;
-
-  if (predictedHome === compareHome && predictedAway === compareAway) {
+  if (predictedHome === actualHome && predictedAway === actualAway) {
     return { points: 3, outcome: "exact" };
   }
   const predictedResult = Math.sign(predictedHome - predictedAway);
-  const actualResult = Math.sign(compareHome - compareAway);
+  const actualResult = Math.sign(actualHome - actualAway);
   if (predictedResult === actualResult) {
     return { points: 1, outcome: "correct_result" };
   }
@@ -151,13 +152,12 @@ Deno.serve(async (req: Request) => {
 
         for (const match of matches) {
           if (!predictionMatchIds.has(match.id)) continue;
-          const home = match.score.fullTime.home;
-          const away = match.score.fullTime.away;
-          if (home === null || away === null) continue;
+          const result = judgedScore(match.score);
+          if (!result) continue;
           matchUpdates.push({
             id: match.id,
-            home_score: home,
-            away_score: away,
+            home_score: result.home,
+            away_score: result.away,
             status: "FINISHED",
           });
         }
@@ -166,18 +166,14 @@ Deno.serve(async (req: Request) => {
           const match = matchMap.get(prediction.match_id);
           if (!match) continue;
 
-          const actualHome = match.score.fullTime.home;
-          const actualAway = match.score.fullTime.away;
-          if (actualHome === null || actualAway === null) continue;
+          const result = judgedScore(match.score);
+          if (!result) continue;
 
           const { points, outcome } = calculatePoints(
             prediction.predicted_home,
             prediction.predicted_away,
-            actualHome,
-            actualAway,
-            match.score.regularTime?.home ?? null,
-            match.score.regularTime?.away ?? null,
-            match.score.duration,
+            result.home,
+            result.away,
           );
 
           predictionUpdates.push({
