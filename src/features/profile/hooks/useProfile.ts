@@ -104,7 +104,7 @@ const fetchRecentPicks = async (userId: string): Promise<RecentPick[]> => {
     )
     .eq("user_id", userId)
     .eq("is_scored", true)
-    .order("kickoff_at", { referencedTable: "matches", ascending: false })
+    .order("matches(kickoff_at)", { ascending: false })
     .limit(10);
 
   if (error) throw error;
