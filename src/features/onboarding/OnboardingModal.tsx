@@ -3,21 +3,21 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/typography";
 import { STORAGE_KEY } from "@/constants";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function OnboardingModal() {
   const { profile, user } = useAuthContext();
-  const [open, setOpen] = useState(false);
+  const [dismissed, setDismissed] = useState(
+    () => localStorage.getItem(STORAGE_KEY) !== null,
+  );
 
-  useEffect(() => {
-    const seen = localStorage.getItem(STORAGE_KEY);
-    const blockedByUsernameGate = !!user && !profile?.username;
-    if (!seen && !blockedByUsernameGate) setOpen(true);
-  }, [user, profile?.username]);
+  // Wait until the username gate is done; same condition UsernameSetupModal uses.
+  const blockedByUsernameGate = !!user && !!profile && !profile.username;
+  const open = !dismissed && !blockedByUsernameGate;
 
   function dismiss() {
     localStorage.setItem(STORAGE_KEY, "true");
-    setOpen(false);
+    setDismissed(true);
   }
 
   return (
