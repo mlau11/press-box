@@ -1,18 +1,11 @@
 import { Pill } from "@/components/ui/pill";
 import { Label } from "@/components/ui/typography";
+import {
+  formatPoints,
+  outcomeLabel,
+  outcomeVariant,
+} from "../predictions/utils/outcome";
 import type { RecentPick } from "./hooks/useProfile";
-
-const outcomeVariant = (points: number) => {
-  if (points === 3) return "success";
-  if (points === 1) return "success";
-  return "destructive";
-};
-
-const outcomeLabel = (points: number) => {
-  if (points === 3) return "+3";
-  if (points === 1) return "+1";
-  return "0";
-};
 
 function ScoreCol({
   home,
@@ -107,10 +100,10 @@ export default function RecentPicks({ picks }: { picks: RecentPick[] }) {
 
                 <div className="flex justify-end">
                   <Pill
-                    variant={outcomeVariant(pick.points_earned)}
+                    variant={outcomeVariant(pick.outcome)}
                     className="w-[46px] justify-center"
                   >
-                    {outcomeLabel(pick.points_earned)}
+                    {formatPoints(pick.points_earned)}
                   </Pill>
                 </div>
               </div>

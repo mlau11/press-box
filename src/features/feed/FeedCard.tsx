@@ -3,28 +3,15 @@ import { Label } from "@/components/ui/typography";
 import { leagueLabel } from "@/constants";
 import { formatDate } from "@/utils/formatDate";
 import { Link } from "react-router-dom";
+import {
+  formatPoints,
+  outcomeLabel,
+  outcomeVariant,
+} from "../predictions/utils/outcome";
 import type { FeedItem } from "./hooks/useFeed";
 
-const outcomeVariant = (outcome: string | null) => {
-  if (outcome === "exact") return "success";
-  if (outcome === "correct_result") return "neutral";
-  return "destructive";
-};
-
-const outcomeLabel: Record<string, string> = {
-  exact: "Exact",
-  correct_result: "Correct",
-  wrong: "Wrong",
-};
-
-const pointsLabel: Record<string, string> = {
-  exact: "+3",
-  correct_result: "+1",
-  wrong: "0",
-};
-
 export default function FeedCard({ item }: { item: FeedItem }) {
-  const hasOutcome = item.is_scored && item.outcome != null;
+  const outcome = item.is_scored ? item.outcome : null;
 
   return (
     <div className="bg-surface-1 rounded-sm overflow-hidden">
@@ -43,21 +30,17 @@ export default function FeedCard({ item }: { item: FeedItem }) {
           </Label>
         </Link>
 
-        {item.is_scored ? (
-          hasOutcome ? (
-            <div className="flex items-center gap-2 shrink-0">
-              <Pill variant={outcomeVariant(item.outcome)} size="sm">
-                {outcomeLabel[item.outcome as string]}
-              </Pill>
-              <span className="text-sm font-medium text-foreground tabular-nums">
-                {pointsLabel[item.outcome as string]} pts
-              </span>
-            </div>
-          ) : (
-            <Label className="shrink-0">Scoring…</Label>
-          )
+        {outcome ? (
+          <div className="flex items-center gap-2 shrink-0">
+            <Pill variant={outcomeVariant(outcome)} size="sm">
+              {outcomeLabel[outcome]}
+            </Pill>
+            <span className="text-sm font-medium text-foreground tabular-nums">
+              {formatPoints(item.points_earned)} pts
+            </span>
+          </div>
         ) : (
-          <Label className="shrink-0">Pending</Label>
+          <Label className="shrink-0">Scoring…</Label>
         )}
       </div>
 
