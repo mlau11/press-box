@@ -1,5 +1,4 @@
 import App from "@/App";
-import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/features/auth/context/AuthContext";
 import { AuthModalProvider } from "@/features/auth/context/AuthModalContext";
 import "@/index.css";
@@ -23,13 +22,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <ThemeProvider>
-          <AuthProvider>
-            <AuthModalProvider>
-              <App />
-            </AuthModalProvider>
-          </AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <AuthModalProvider>
+            <App />
+          </AuthModalProvider>
+        </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>,

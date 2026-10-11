@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --surface-1: oklch(0.1533 0.0107 294.27);
   --surface-2: oklch(0.1785 0.0041 285.98);
@@ -10,7 +12,7 @@
   --surface-5: oklch(0.21 0.003 260);
   --surface-6: oklch(0.3082 0.009 295.04);
 
-  /* ── Shadcn surface aliases ── */
+  /* Shadcn surface aliases */
   --background: var(--surface-4);
   --popover: var(--surface-6);
   --popover-foreground: var(--foreground);
