@@ -20,4 +20,24 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // Shadcn's generated style variants and each context's hook are exported
+    // alongside components on purpose. The rule only affects dev hot reload;
+    // any other non-component export in these files still errors.
+    files: ["src/components/ui/**/*.tsx", "src/features/**/context/*.tsx"],
+    rules: {
+      "react-refresh/only-export-components": [
+        "error",
+        {
+          allowConstantExport: true,
+          allowExportNames: [
+            "buttonVariants",
+            "tabsListVariants",
+            "useAuthContext",
+            "useAuthModal",
+          ],
+        },
+      ],
+    },
+  },
 ]);
