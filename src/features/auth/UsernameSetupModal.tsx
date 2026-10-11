@@ -3,8 +3,9 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/typography";
 import { supabase } from "@/lib/supabase";
-import { useEffect, useState, type SubmitEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import { useAuthContext } from "./context/AuthContext";
+import { useUsernameAvailability } from "./hooks/useUsernameAvailability";
 import { USERNAME_RULE, validateUsername } from "./utils/validateUsername";
 
 export default function UsernameSetupModal() {
@@ -13,36 +14,14 @@ export default function UsernameSetupModal() {
   const [username, setUsername] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [checking, setChecking] = useState(false);
-  const [available, setAvailable] = useState<boolean | null>(null);
 
   const needsUsername = !loading && !!user && !!profile && !profile.username;
+  const { checking, available } = useUsernameAvailability(
+    username,
+    needsUsername,
+  );
   const formatError =
     username.trim() === "" ? null : validateUsername(username);
-
-  useEffect(() => {
-    const value = username.trim().toLowerCase();
-
-    if (validateUsername(value) !== null) {
-      setAvailable(null);
-      setChecking(false);
-      return;
-    }
-
-    setChecking(true);
-    const timer = setTimeout(async () => {
-      const { data, error: lookupError } = await supabase
-        .from("users")
-        .select("id")
-        .eq("username", value)
-        .maybeSingle();
-
-      if (!lookupError) setAvailable(!data);
-      setChecking(false);
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [username]);
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
