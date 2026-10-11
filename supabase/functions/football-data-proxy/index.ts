@@ -1,6 +1,41 @@
 const FOOTBALL_DATA_API_KEY = Deno.env.get("FOOTBALL_DATA_API_KEY");
 const BASE_URL = "https://api.football-data.org/v4";
 
+// Keep in sync with LEAGUES in src/constants (WC is dormant until 2030).
+const LEAGUE_CODES = new Set([
+  "PL",
+  "PD",
+  "BL1",
+  "SA",
+  "FL1",
+  "CL",
+  "ELC",
+  "DED",
+  "PPL",
+  "BSA",
+  "WC",
+]);
+
+const PARAM_PATTERNS: Record<string, RegExp> = {
+  teamId: /^\d{1,10}$/,
+  matchday: /^\d{1,2}$/,
+  stage: /^[A-Z0-9_]{1,40}$/,
+  dateFrom: /^\d{4}-\d{2}-\d{2}$/,
+  dateTo: /^\d{4}-\d{2}-\d{2}$/,
+};
+
+// Every param is interpolated into the upstream URL, so each one is checked
+// against a strict pattern first.
+const findInvalidParam = (params: URLSearchParams): string | null => {
+  const league = params.get("league");
+  if (league !== null && !LEAGUE_CODES.has(league)) return "league";
+  for (const [name, pattern] of Object.entries(PARAM_PATTERNS)) {
+    const value = params.get(name);
+    if (value !== null && !pattern.test(value)) return name;
+  }
+  return null;
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -53,6 +88,12 @@ Deno.serve(async (req: Request) => {
 
   try {
     const url = new URL(req.url);
+
+    const invalidParam = findInvalidParam(url.searchParams);
+    if (invalidParam) {
+      return jsonResponse({ error: `Invalid ${invalidParam}` }, 400);
+    }
+
     const type = url.searchParams.get("type");
     const leagueCode = url.searchParams.get("league");
     const matchday = url.searchParams.get("matchday");
