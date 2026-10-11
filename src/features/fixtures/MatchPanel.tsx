@@ -164,26 +164,18 @@ export default function MatchPanel({
 
   const { user } = useAuthContext();
   const { openAuthModal } = useAuthModal();
-  const { mutate: submitPrediction, isPending } = useSubmitPrediction();
+  const {
+    mutate: submitPrediction,
+    isPending,
+    error: submitError,
+    variables: submittedVariables,
+  } = useSubmitPrediction();
 
   const { data: homeForm } = useTeamForm(match?.homeTeam.id ?? undefined);
   const { data: awayForm } = useTeamForm(match?.awayTeam.id ?? undefined);
   const { data: standings } = useStandings(leagueCode);
 
   const shouldFilterStandings = leagueCode !== "WC";
-
-  const matchData = match
-    ? {
-        homeTeam: match.homeTeam.name ?? "",
-        awayTeam: match.awayTeam.name ?? "",
-        homeShortName: match.homeTeam.shortName ?? "",
-        awayShortName: match.awayTeam.shortName ?? "",
-        homeCrest: match.homeTeam.crest ?? "",
-        awayCrest: match.awayTeam.crest ?? "",
-        kickoffAt: match.utcDate,
-        status: match.status,
-      }
-    : null;
 
   useEffect(() => {
     setHomeScore(0);
@@ -202,16 +194,12 @@ export default function MatchPanel({
     if (!user || !pendingSubmitRef.current) return;
     pendingSubmitRef.current = false;
 
-    if (!match || !matchData) return;
+    if (!match) return;
 
     submitPrediction({
-      userId: user!.id,
       matchId: match.id,
-      leagueCode,
-      matchday: match.matchday,
       predictedHome: homeScore,
       predictedAway: awayScore,
-      matchData,
     });
   }, [user]);
 
@@ -232,6 +220,11 @@ export default function MatchPanel({
   const homeFormRows = homeForm?.length ? homeForm : null;
   const awayFormRows = awayForm?.length ? awayForm : null;
   const stageLabel = match.stage ? getStageLabel(match.stage) : null;
+  // Only show an error for the match it happened on.
+  const submitErrorMessage =
+    submitError && submittedVariables?.matchId === match.id
+      ? submitError.message
+      : null;
   const bumpHome = (delta: number) => {
     setHomeScore((s) => Math.max(0, s + delta));
   };
@@ -246,15 +239,10 @@ export default function MatchPanel({
       openAuthModal();
       return;
     }
-    if (!matchData) return;
     submitPrediction({
-      userId: user.id,
       matchId: match.id,
-      leagueCode,
-      matchday: match.matchday,
       predictedHome: homeScore,
       predictedAway: awayScore,
-      matchData,
     });
   };
 
@@ -553,6 +541,11 @@ export default function MatchPanel({
                     ? "Submit prediction"
                     : "Sign in to predict"}
           </Button>
+          {submitErrorMessage && (
+            <p className="text-xs text-destructive text-center">
+              {submitErrorMessage}
+            </p>
+          )}
         </div>
 
         {/* Form + Standings Tabs */}

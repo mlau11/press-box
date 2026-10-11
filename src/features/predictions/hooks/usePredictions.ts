@@ -1,71 +1,30 @@
 import { supabase } from "@/lib/supabase";
 import type { Prediction } from "@/types";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const submitPrediction = async ({
-  userId,
   matchId,
-  leagueCode,
-  matchday,
   predictedHome,
   predictedAway,
-  matchData,
 }: {
-  userId: string;
   matchId: number;
-  leagueCode: string;
-  matchday: number | null;
   predictedHome: number;
   predictedAway: number;
-  matchData: {
-    homeTeam: string;
-    awayTeam: string;
-    homeShortName: string;
-    awayShortName: string;
-    homeCrest: string;
-    awayCrest: string;
-    kickoffAt: string;
-    status: string;
-  };
 }): Promise<Prediction> => {
-  // upsert match data first
-  const { error: matchError } = await supabase.from("matches").upsert(
-    {
-      id: matchId,
-      league_code: leagueCode,
-      matchday,
-      home_team: matchData.homeTeam,
-      away_team: matchData.awayTeam,
-      home_short_name: matchData.homeShortName,
-      away_short_name: matchData.awayShortName,
-      home_crest: matchData.homeCrest,
-      away_crest: matchData.awayCrest,
-      kickoff_at: matchData.kickoffAt,
-      status: matchData.status,
-    },
-    { onConflict: "id" },
+  const { data, error } = await supabase.functions.invoke<Prediction>(
+    "submit-prediction",
+    { body: { matchId, predictedHome, predictedAway } },
   );
 
-  if (matchError) throw matchError;
-
-  // then upsert the prediction
-  const { data, error } = await supabase
-    .from("predictions")
-    .upsert(
-      {
-        user_id: userId,
-        match_id: matchId,
-        league_code: leagueCode,
-        matchday,
-        predicted_home: predictedHome,
-        predicted_away: predictedAway,
-      },
-      { onConflict: "user_id,match_id" },
-    )
-    .select()
-    .single();
-
-  if (error) throw error;
+  if (error) {
+    const body =
+      error instanceof FunctionsHttpError
+        ? await error.context.json().catch(() => null)
+        : null;
+    throw new Error(body?.error ?? "Couldn't submit prediction. Try again.");
+  }
+  if (!data) throw new Error("Couldn't submit prediction. Try again.");
 
   return data;
 };
