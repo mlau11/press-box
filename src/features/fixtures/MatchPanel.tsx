@@ -158,8 +158,14 @@ export default function MatchPanel({
   existingPrediction,
   leagueCode,
 }: MatchPanelProps) {
-  const [homeScore, setHomeScore] = useState(0);
-  const [awayScore, setAwayScore] = useState(0);
+  // The user's unsaved edit; until they touch the inputs, show their saved
+  // prediction. Fixtures keys this component by match id, so switching
+  // matches starts with a fresh draft.
+  const [draft, setDraft] = useState<{ home: number; away: number } | null>(
+    null,
+  );
+  const homeScore = draft?.home ?? existingPrediction?.predicted_home ?? 0;
+  const awayScore = draft?.away ?? existingPrediction?.predicted_away ?? 0;
   const pendingSubmitRef = useRef(false);
 
   const { user } = useAuthContext();
@@ -178,19 +184,6 @@ export default function MatchPanel({
   const shouldFilterStandings = leagueCode !== "WC";
 
   useEffect(() => {
-    setHomeScore(0);
-    setAwayScore(0);
-    pendingSubmitRef.current = false;
-  }, [match?.id]);
-
-  useEffect(() => {
-    if (existingPrediction) {
-      setHomeScore(existingPrediction.predicted_home);
-      setAwayScore(existingPrediction.predicted_away);
-    }
-  }, [existingPrediction?.predicted_home, existingPrediction?.predicted_away]);
-
-  useEffect(() => {
     if (!user || !pendingSubmitRef.current) return;
     pendingSubmitRef.current = false;
 
@@ -201,7 +194,7 @@ export default function MatchPanel({
       predictedHome: homeScore,
       predictedAway: awayScore,
     });
-  }, [user]);
+  }, [user, match, homeScore, awayScore, submitPrediction]);
 
   if (!match) return <MatchPanelSkeleton />;
 
@@ -226,11 +219,11 @@ export default function MatchPanel({
       ? submitError.message
       : null;
   const bumpHome = (delta: number) => {
-    setHomeScore((s) => Math.max(0, s + delta));
+    setDraft({ home: Math.max(0, homeScore + delta), away: awayScore });
   };
 
   const bumpAway = (delta: number) => {
-    setAwayScore((s) => Math.max(0, s + delta));
+    setDraft({ home: homeScore, away: Math.max(0, awayScore + delta) });
   };
 
   const handleSubmit = () => {
@@ -512,8 +505,7 @@ export default function MatchPanel({
                 type="button"
                 disabled={!isEditable}
                 onClick={() => {
-                  setHomeScore(h);
-                  setAwayScore(a);
+                  setDraft({ home: h, away: a });
                 }}
                 className={quickPickButtonClasses}
               >

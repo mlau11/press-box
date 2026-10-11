@@ -82,7 +82,9 @@ function LeagueFixtures({
   const dateTo = useMemo(() => toDateString(addDays(today, 60)), [today]);
   const todayStr = useMemo(() => toDateString(today), [today]);
 
-  const [selectedDate, setSelectedDate] = useState<string>(todayStr);
+  // null until the user picks a date; LeagueFixtures is keyed by league, so
+  // switching leagues starts fresh from the default.
+  const [pickedDate, setPickedDate] = useState<string | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   const { data, isLoading, isError } = useFixtures(
@@ -106,12 +108,12 @@ function LeagueFixtures({
 
   const fixtureDateSet = useMemo(() => new Set(fixtureDates), [fixtureDates]);
 
-  useEffect(() => {
-    if (!fixtureDates.length) return;
-    const upcoming = fixtureDates.find((d) => d >= todayStr);
-    const defaultDate = upcoming ?? fixtureDates[fixtureDates.length - 1]!;
-    setSelectedDate(defaultDate);
-  }, [fixtureDates, todayStr]);
+  // Default to the next matchday, or the last one if the season window has none.
+  const defaultDate =
+    fixtureDates.find((d) => d >= todayStr) ??
+    fixtureDates[fixtureDates.length - 1] ??
+    todayStr;
+  const selectedDate = pickedDate ?? defaultDate;
 
   const matches = useMemo(() => {
     if (!data?.matches) return [];
@@ -125,6 +127,8 @@ function LeagueFixtures({
     );
   }, [data, selectedDate]);
 
+  const hasActiveMatch = activeMatch !== null;
+
   useEffect(() => {
     if (!matches.length) return;
     onMatchesLoad(matches.map((m) => m.id));
@@ -132,27 +136,27 @@ function LeagueFixtures({
       (m) => m.status === "SCHEDULED" || m.status === "TIMED",
     );
     const matchToSelect = firstUnplayed ?? matches[0];
-    if (matchToSelect && !activeMatch) {
+    if (matchToSelect && !hasActiveMatch) {
       onAutoSelect(matchToSelect);
     }
-  }, [matches, onMatchesLoad, onAutoSelect]);
+  }, [matches, hasActiveMatch, onMatchesLoad, onAutoSelect]);
 
   const currentIndex = fixtureDates.indexOf(selectedDate);
   const isPrevDisabled = currentIndex <= 0;
   const isNextDisabled = currentIndex >= fixtureDates.length - 1;
 
   const handlePrev = () => {
-    if (currentIndex > 0) setSelectedDate(fixtureDates[currentIndex - 1]!);
+    if (currentIndex > 0) setPickedDate(fixtureDates[currentIndex - 1]!);
   };
 
   const handleNext = () => {
     if (currentIndex < fixtureDates.length - 1)
-      setSelectedDate(fixtureDates[currentIndex + 1]!);
+      setPickedDate(fixtureDates[currentIndex + 1]!);
   };
 
   const handleCalendarSelect = (date: Date | undefined) => {
     if (!date) return;
-    setSelectedDate(toDateString(date));
+    setPickedDate(toDateString(date));
     setCalendarOpen(false);
   };
 
@@ -313,6 +317,7 @@ export default function Fixtures() {
         {/* Fixtures */}
         {activeLeagueData && (
           <LeagueFixtures
+            key={activeLeagueData.code}
             leagueCode={activeLeagueData.code}
             activeMatch={activeMatch}
             onMatchSelect={handleMatchSelect}
@@ -326,6 +331,7 @@ export default function Fixtures() {
       {/* Match panel */}
       <div className="hidden lg:block min-w-0">
         <MatchPanel
+          key={activeMatch?.id}
           match={activeMatch}
           existingPrediction={existingPrediction}
           leagueCode={activeLeague}
@@ -337,6 +343,7 @@ export default function Fixtures() {
           <DrawerContent className="max-h-[85vh] overflow-y-auto px-6 pb-8">
             <div className="mt-4">
               <MatchPanel
+                key={activeMatch?.id}
                 match={activeMatch}
                 existingPrediction={existingPrediction}
                 leagueCode={activeLeague}
