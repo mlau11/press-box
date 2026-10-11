@@ -1,8 +1,9 @@
-export type WCStage =
+export type CompetitionStage =
   | { label: string; matchday: number; stage?: never }
   | { label: string; stage: string; matchday?: never };
 
-export const WC_STAGES: WCStage[] = [
+// WC_STAGES is unused until the next WC
+export const WC_STAGES: CompetitionStage[] = [
   { label: "Group Stage MD1", matchday: 1 },
   { label: "Group Stage MD2", matchday: 2 },
   { label: "Group Stage MD3", matchday: 3 },
@@ -14,7 +15,7 @@ export const WC_STAGES: WCStage[] = [
   { label: "Final", stage: "FINAL" },
 ];
 
-export const CL_STAGES: WCStage[] = [
+export const CL_STAGES: CompetitionStage[] = [
   { label: "League Phase MD1", matchday: 1 },
   { label: "League Phase MD2", matchday: 2 },
   { label: "League Phase MD3", matchday: 3 },

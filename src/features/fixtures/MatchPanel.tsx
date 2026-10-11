@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { LiveDot, Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/typography";
-import { leagueLabel, WC_STAGES } from "@/constants";
+import { leagueLabel } from "@/constants";
 import { useAuthContext } from "@/features/auth/context/AuthContext";
 import { useAuthModal } from "@/features/auth/context/AuthModalContext";
 import { useSubmitPrediction } from "@/features/predictions/hooks/usePredictions";
@@ -17,7 +17,12 @@ import {
 } from "./hooks/useMatchStats";
 import MatchPanelSkeleton from "./MatchPanelSkeleton";
 import { ScoreInput } from "./ScoreInput";
-import { formatKickoff, getFormResult, statusLabel } from "./utils/matches";
+import {
+  formatKickoff,
+  getFormResult,
+  getStageLabel,
+  statusLabel,
+} from "./utils/matches";
 
 interface MatchPanelProps {
   match: Match | null;
@@ -226,11 +231,7 @@ export default function MatchPanel({
   const awayTeamId = match.awayTeam.id;
   const homeFormRows = homeForm?.length ? homeForm : null;
   const awayFormRows = awayForm?.length ? awayForm : null;
-  const stageLabel = match.stage
-    ? (WC_STAGES.find((s) => "stage" in s && s.stage === match.stage)?.label ??
-      match.stage)
-    : null;
-
+  const stageLabel = match.stage ? getStageLabel(match.stage) : null;
   const bumpHome = (delta: number) => {
     setHomeScore((s) => Math.max(0, s + delta));
   };

@@ -1,3 +1,4 @@
+import { CL_STAGES } from "@/constants";
 import type { Match } from "@/types";
 
 const statusOrder = (status: string): number => {
@@ -68,3 +69,11 @@ export const getFormResult = (
     return "W";
   return "L";
 };
+
+export const getStageLabel = (stage: string) =>
+  CL_STAGES.find((s) => s.stage === stage)?.label ??
+  stage
+    .toLowerCase()
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
