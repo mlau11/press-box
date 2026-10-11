@@ -18,8 +18,6 @@ const LEAGUE_CODES = new Set([
 
 const PARAM_PATTERNS: Record<string, RegExp> = {
   teamId: /^\d{1,10}$/,
-  matchday: /^\d{1,2}$/,
-  stage: /^[A-Z0-9_]{1,40}$/,
   dateFrom: /^\d{4}-\d{2}-\d{2}$/,
   dateTo: /^\d{4}-\d{2}-\d{2}$/,
 };
@@ -96,8 +94,6 @@ Deno.serve(async (req: Request) => {
 
     const type = url.searchParams.get("type");
     const leagueCode = url.searchParams.get("league");
-    const matchday = url.searchParams.get("matchday");
-    const stage = url.searchParams.get("stage");
     const teamId = url.searchParams.get("teamId");
     const dateFrom = url.searchParams.get("dateFrom");
     const dateTo = url.searchParams.get("dateTo");
@@ -108,19 +104,11 @@ Deno.serve(async (req: Request) => {
     if (type === "form" && teamId) {
       endpoint = `${BASE_URL}/teams/${teamId}/matches?status=FINISHED&limit=5`;
       cacheControl = "no-store";
-    } else if (type === "competition" && leagueCode) {
-      endpoint = `${BASE_URL}/competitions/${leagueCode}`;
     } else if (type === "standings" && leagueCode) {
       endpoint = `${BASE_URL}/competitions/${leagueCode}/standings`;
-    } else if (leagueCode && dateFrom && dateTo) {
+    } else if (!type && leagueCode && dateFrom && dateTo) {
       endpoint = `${BASE_URL}/competitions/${leagueCode}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`;
       cacheControl = "public, max-age=300";
-    } else if (leagueCode && stage) {
-      endpoint = `${BASE_URL}/competitions/${leagueCode}/matches?stage=${stage}`;
-    } else if (leagueCode && matchday) {
-      endpoint = `${BASE_URL}/competitions/${leagueCode}/matches?matchday=${matchday}`;
-    } else if (leagueCode) {
-      endpoint = `${BASE_URL}/competitions/${leagueCode}/matches?status=SCHEDULED`;
     } else {
       return jsonResponse({ error: "Invalid parameters" }, 400);
     }
