@@ -40,7 +40,7 @@ export default function FeedCard({ item }: { item: FeedItem }) {
             </span>
           </div>
         ) : (
-          <Label className="shrink-0">Scoring…</Label>
+          <Label className="shrink-0">Pending</Label>
         )}
       </div>
 
