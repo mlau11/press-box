@@ -89,8 +89,6 @@ function LeagueFixtures({
 
   const { data, isLoading, isError } = useFixtures(
     leagueCode,
-    undefined,
-    undefined,
     dateFrom,
     dateTo,
   );
