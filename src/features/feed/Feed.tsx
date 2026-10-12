@@ -11,9 +11,9 @@ import { useFeed } from "./hooks/useFeed";
 type Filter = "all" | "settled" | "pending";
 
 const FILTERS: { key: Filter; label: string }[] = [
-  { key: "all", label: "ALL" },
-  { key: "settled", label: "SETTLED" },
-  { key: "pending", label: "PENDING" },
+  { key: "all", label: "All" },
+  { key: "settled", label: "Settled" },
+  { key: "pending", label: "Pending" },
 ];
 
 export default function Feed() {
@@ -65,7 +65,7 @@ export default function Feed() {
               key={key}
               onClick={() => setFilter(key)}
               className={[
-                "px-3.5 py-2.5 text-sm tracking-[0.06em] uppercase transition-colors",
+                "px-3.5 py-2.5 text-sm tracking-[0.06em] transition-colors",
                 "border-b-2 -mb-px",
                 filter === key
                   ? "text-foreground border-accent"

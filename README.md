@@ -17,7 +17,7 @@ Press Box is a score prediction app for European and Brazilian club football. Us
 - **Automatic scoring**: results are scored every 30 minutes without manual input.
 - **Leaderboard**: ranked by points over each user's last 100 scored predictions, with average points and accuracy.
 - **Profiles**: public stats and recent picks for every user.
-- **Feed**: every prediction across the community, with final scores once settled.
+- **Feed**: every prediction across the community, filterable by all, settled or pending, with final scores once settled.
 - **Accounts**: email/password or Google sign-in, password reset, and a required username for Google sign-ups.
 
 ## Scoring
